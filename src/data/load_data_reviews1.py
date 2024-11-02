@@ -78,7 +78,7 @@ def load_movie_reviews1(df_movies, save_to_load_from="IMDBReviews1.csv"):
         df_data = df_data.drop(["movie"], axis=1)
 
         # Match the movies with the reviews on their name and publication date
-        merged_df = df_movies[["name", "release_year"]].merge(df_data, how='inner', left_on=["name", "release_year"], right_on=["movie_name", "movie_year"])
+        merged_df = df_movies[["wikipedia_ID", "name", "release_year"]].merge(df_data, how='inner', left_on=["name", "release_year"], right_on=["movie_name", "movie_year"])
 
         merged_df = merged_df.drop(["movie_name", "movie_year"], axis=1)
 
