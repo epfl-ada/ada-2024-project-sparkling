@@ -48,7 +48,7 @@ def predict_emotions_from_plot(classifier, plot: str):
         normalized_predictions = {label: None for label in predictions}
     else:
         normalized_predictions = {label: score / total_score for label, score in predictions.items()}
-    
+        
     return normalized_predictions
 
 
@@ -59,7 +59,7 @@ def predict_emotions_to_csv(df_movies, csv_path='emotions.csv'):
     tqdm.pandas(desc="Processing emotions")
     emotion_predictions = df_movies['plot'].progress_apply(lambda plot: predict_emotions_from_plot(classifier, plot))
     df_emotion = pd.DataFrame(emotion_predictions.tolist())
-    df_movies_with_emotions = pd.concat([df_movies, df_emotion], axis=1)
+    df_movies_with_emotions = pd.concat([df_movies, df_emotion.set_index(df_movies.index)], axis=1)
     
     df_movies_with_emotions.to_csv(csv_path,
                                columns=['wikipedia_ID', 'anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise'], 
