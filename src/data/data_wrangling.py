@@ -59,17 +59,19 @@ def clean_categories_to_one_hot(df, category_columns):
         - df: Dataframe containing the categorical columns
         - category_columns: The list of columns name containing the categories
 
-    Returns the same dataframe extended with the hot one encodings (where the original colunms are dropped)
+    Returns 
+        - (Dataframe): The same dataframe extended with the plots. Note that the given list of columns will be removed from the first extended dataset.
+        - (List[DataFrame]): A list of dataframes  containing for each the associated wikipedia_ID and hot one encodings for each category.
     """
-    list_one_hot_encoding = []
+    list_dataframe_one_hot_encoding = []
     for column_name in category_columns:
         df_one_hot_encoding = convert_dictionary_column_to_categorical(df[column_name])
-        list_one_hot_encoding.append(df_one_hot_encoding)
+        df_one_hot_encoding["wikipedia_ID"] = df["wikipedia_ID"]
+        list_dataframe_one_hot_encoding.append(df_one_hot_encoding)
         
-    df = pd.concat([df] + list_one_hot_encoding, axis=1)
     df = df.drop(labels=category_columns, axis=1)
 
-    return df
+    return df, list_dataframe_one_hot_encoding
 
 def parse_release_date(df, colunm_name):
     """
@@ -140,6 +142,13 @@ def clean_plot(df, colunm_name):
     return df
 
 def load_and_clean_movies_df():
+    """
+    Returns a list of 4 dataframes.
+    - A dataframe containing the main metadata of the movies along with its plot
+    - A dataframe containing the language of the movie in one hot encoding, associated to the wikipedia_ID of the movie
+    - A dataframe containing the countries of the movie in one hot encoding, associated to the wikipedia_ID of the movie
+    - A dataframe containing the genres of the movie in one hot encoding, associated to the wikipedia_ID of the movie
+    """
     
     # Load data
     df_movies_metadata = load_movie_metadata()
@@ -147,7 +156,7 @@ def load_and_clean_movies_df():
 
     # Data wangling movie metadata
     df_movies_metadata_cleaned = parse_release_date(df_movies_metadata, "release_date")
-    df_movies_metadata_cleaned = clean_categories_to_one_hot(df_movies_metadata_cleaned, ["languages", "countries", "genres"])
+    df_movies_metadata_cleaned, list_one_hot_encoding_dataframes = clean_categories_to_one_hot(df_movies_metadata_cleaned, ["languages", "countries", "genres"])
 
     # Data wangling movie plot
     df_movies_plot_cleaned = clean_plot(df_movies_plot, "plot")
@@ -155,4 +164,4 @@ def load_and_clean_movies_df():
     # Merge dataframes
     df_movies = df_movies_metadata_cleaned.merge(df_movies_plot_cleaned, on="wikipedia_ID")
 
-    return df_movies
+    return [df_movies] + list_one_hot_encoding_dataframes
