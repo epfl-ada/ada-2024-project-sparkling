@@ -25,3 +25,14 @@ def load_movie_plot():
     df_movies_plot = pd.read_csv(movie_plot_path, sep='\t', header=None, names=["wikipedia_ID", "plot"])
 
     return df_movies_plot
+
+def load_character_metadata():
+    """
+    Load the character metadata file
+
+    Returns a dataframe containing the data
+    """
+    path = os.path.join(DATASETS_DIR, MOVIE_SUMMARIES_DIR, "character.metadata.tsv")
+    df = pd.read_csv(path, sep='\t', header=None, names=["wikipedia_ID", "freebase_ID", "movie_release_date", "name", "actor_birth_date", "actor_gender", "actor_height", "freebase_ID_actor_ethnicity", "actor_name", "actor_age", "freebase_ID_character_actor_map", "freebase_ID_character", "freebase_ID_actor"])
+
+    return df

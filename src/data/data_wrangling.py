@@ -32,7 +32,6 @@ def convert_dictionary_column_to_categorical(df_column):
     df_column.apply(apply_row_get_categories)
     list_of_unique_category = list(set_of_unique_category)
     
-    # Transform the python list to pandas series
     # Returning multiple columns using the apply function: 
     #   https://stackoverflow.com/questions/52854147/using-result-type-with-pandas-apply-function
     def apply_row_to_one_hot(element):
@@ -141,6 +140,26 @@ def clean_plot(df, colunm_name):
 
     return df
 
+def process_df_languages(df):
+    """
+    Improve the list of languages in the language Dataframe
+
+    Arguments:
+        - df: The language dataframe
+
+    Returns the same dataframe with the improved list of languages
+    """
+    # We want to merge couple of languages into the same language column
+    # For example, there is a language "France" and also the "right" language "French Language"
+    # So we are going to merge both columns, keeping only the "French Language" column.
+    couple_col_replace = [("French Language", "France"), ("Japanese Language", "Japan"), ("German Language", "Deutsch"), ("German Language", "German"), ("Hungarian language", "Hungary"), ("Italian Language", "Italian")]
+    for final_col_name, remove_col_name in couple_col_replace:
+        df[final_col_name] = df[final_col_name] | df[remove_col_name]
+        df = df.drop(remove_col_name, axis=1)
+
+    return df
+
+
 def load_and_clean_movies_df():
     """
     Returns a list of 4 dataframes.
@@ -158,10 +177,15 @@ def load_and_clean_movies_df():
     df_movies_metadata_cleaned = parse_release_date(df_movies_metadata, "release_date")
     df_movies_metadata_cleaned, list_one_hot_encoding_dataframes = clean_categories_to_one_hot(df_movies_metadata_cleaned, ["languages", "countries", "genres"])
 
+    df_languages, df_countries, df_genres = list_one_hot_encoding_dataframes
+
+    # Pre-process the language Dataframe
+    df_languages = process_df_languages(df_languages)
+
     # Data wangling movie plot
     df_movies_plot_cleaned = clean_plot(df_movies_plot, "plot")
 
     # Merge dataframes
     df_movies = df_movies_metadata_cleaned.merge(df_movies_plot_cleaned, on="wikipedia_ID")
 
-    return [df_movies] + list_one_hot_encoding_dataframes
+    return df_movies, df_languages, df_countries, df_genres
