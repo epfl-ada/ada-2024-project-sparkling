@@ -29,18 +29,18 @@ def load_raw_imdb_average_reviews():
     return df
 
 
-def load_imdb_average_reviews(df_movies):
+def load_imdb_id_wikipedia_id(df_movies):
     """
-    Load the reviews and merge with our movies.
+    Load the IMDB IDs and merge it the right wikipedia_ID.
 
     Arguments:
         - df_movies: Dataframe containing our movies with at least the columns wikipedia_ID, name and release_year
 
-    Returns a Dataframe containing the wikipedia_ID, tconst and the averageRating
+    Returns a Dataframe containing the wikipedia_ID, tconst (IDMB ID)
     """
+
     # Load IMDB data
     imdb_id = load_imdb_movie_metadata()
-    imdb_ratings = load_raw_imdb_average_reviews()
 
     def startYear_mapping(element):
         """
@@ -84,14 +84,31 @@ def load_imdb_average_reviews(df_movies):
         how="inner",
     )
 
-    data_for_ratings = pd.concat([merge_primary, merge_original]).drop_duplicates(
-        subset=["wikipedia_ID"]
-    )
-    data_for_ratings = data_for_ratings[["wikipedia_ID", "tconst"]]
+    df_mapping_imdb_id_wikipedia_id = pd.concat(
+        [merge_primary, merge_original]
+    ).drop_duplicates(subset=["wikipedia_ID"])
+    df_mapping_imdb_id_wikipedia_id = df_mapping_imdb_id_wikipedia_id[
+        ["wikipedia_ID", "tconst"]
+    ]
+
+    return df_mapping_imdb_id_wikipedia_id
+
+
+def load_imdb_average_reviews(df_mapping_imdb_id_wikipedia_id):
+    """
+    Load the reviews and merge with our movies.
+
+    Arguments:
+        - df_mapping_imdb_id_wikipedia_id: Dataframe containing the mapping between the wikipedia_ID and the IMDB ID (tconst)
+
+    Returns a Dataframe containing the wikipedia_ID, tconst and the averageRating
+    """
+    # Load IMDB data
+    imdb_ratings = load_raw_imdb_average_reviews()
 
     # Merge with average rating
-    ratings = pd.merge(data_for_ratings, imdb_ratings, on="tconst", how="inner")[
-        ["wikipedia_ID", "tconst", "averageRating"]
-    ]
+    ratings = pd.merge(
+        df_mapping_imdb_id_wikipedia_id, imdb_ratings, on="tconst", how="inner"
+    )[["wikipedia_ID", "tconst", "averageRating"]]
 
     return ratings
