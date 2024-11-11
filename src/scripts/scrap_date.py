@@ -1,7 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
-import re
-from datetime import datetime
+import pandas as pd
 
 
 def wikidata_from_wikipedia_id(wikipedia_id, language="en"):
@@ -69,3 +67,41 @@ def format_date_numeric(date_str):
         return "", ""
     year_month = date_str[1:8]  # Extract "+YYYY-MM"
     return year_month[:4], year_month[5:]
+
+
+def scrap_years_months_movies(df_movies, path_to_csv="dates_scraped.csv"):
+    """
+    Scrap years and months of the publication date of the movies and save the scrapped values in path_to_csv
+
+    Arguments:
+        - df_movies: Dataframe containing the movie wikipedia_ID along
+        with their publication date (release_year and release_month)
+
+    """
+
+    # Create a copy of the dataframe of movies
+    df_movies_scraped = df_movies.copy()
+
+    df_movies_scraped = df_movies_scraped.rename(
+        columns={"release_year": "release_year_x", "release_month": "release_month_x"}
+    )
+
+    df_movies_scraped = df_movies_scraped[
+        ["wikipedia_ID", "release_year_x", "release_month_x"]
+    ].copy()
+
+    # add empty columns that are going to be fill by scraping the dates
+    df_movies_scraped["release_year_y"] = ""
+    df_movies_scraped["release_month_y"] = ""
+
+    for idx, row in df_movies_scraped.iterrows():
+        w_id = row.wikipedia_ID
+        year, month = format_date_numeric(
+            get_release_date(wikidata_from_wikipedia_id(w_id)[1])
+        )
+        df_movies_scraped.loc[idx, "release_year_y"] = year
+        df_movies_scraped.loc[idx, "release_month_y"] = month
+
+        # save the file with the new scraped dates
+        # We are saving it at each iteration as it may take time to run.
+        df_movies_scraped.to_csv(path_to_csv, index=False)
