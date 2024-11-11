@@ -3,7 +3,10 @@
 Tree of the data folder:
 ````
 data
-├── IMDBReviews1 (https://www.kaggle.com/datasets/ebiswas/imdb-review-dataset/data)
+├── IMDB (https://developer.imdb.com/non-commercial-datasets/)
+│   ├── title.basics.tsv
+│   └── title.ratings.tsv
+├── IMDBReviewsKaggle (https://www.kaggle.com/datasets/ebiswas/imdb-review-dataset/data)
 │   ├── part-01.json
 │   ├── part-02.json
 │   ├── part-03.json
