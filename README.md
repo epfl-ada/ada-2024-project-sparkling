@@ -12,6 +12,7 @@ data
 │   ├── title.basics.tsv
 │   └── title.ratings.tsv
 ├── IMDBReviewsKaggle (https://www.kaggle.com/datasets/ebiswas/imdb-review-dataset/data)
+│   ├── IMDBReviewsKaggle.csv (created with all the other datasets) - CSV merging all the parts and keeping only the reviews that are interesting
 │   ├── part-01.json
 │   ├── part-02.json
 │   ├── part-03.json
