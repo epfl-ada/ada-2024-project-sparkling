@@ -143,9 +143,15 @@ def load_final_movies_and_reviews(
         # Merge the scrapped reviews and the reviews from kaggle
         df_scrapped_reviews_movies_merged = df_movies_plot_number_minimum[
             ["wikipedia_ID", "name", "release_year"]
-        ].merge(df_imdb_reviews, left_on="wikipedia_ID", right_on="0")
+        ].merge(df_imdb_reviews, on="wikipedia_ID")
+
+        # Our version of the scrapped dataset also have a column "2", we fixed this in the new scrapping code
+        if "2" in df_scrapped_reviews_movies_merged.columns:
+            df_scrapped_reviews_movies_merged = df_scrapped_reviews_movies_merged.drop(
+                ["2"], axis=1
+            )
         df_scrapped_reviews_movies_merged = df_scrapped_reviews_movies_merged.drop(
-            ["0", "2", "tconst"], axis=1
+            ["tconst"], axis=1
         )
         df_scrapped_reviews_movies_merged = df_scrapped_reviews_movies_merged.rename(
             {"review_summary": "review_detail"}, axis=1
