@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from src.data.load_data import DATASETS_DIR
 
-IMDB_REVIEW_1 = "IMDBReviewsKaggle"
+IMDB_REVIEW_KAGGLE = "IMDBReviewsKaggle"
 
 
 def load_movie_reviews_kaggle(df_movies, save_to_load_from="IMDBReviewsKaggle.csv"):
@@ -20,13 +20,13 @@ def load_movie_reviews_kaggle(df_movies, save_to_load_from="IMDBReviewsKaggle.cs
     create the csv file (~ 2.5 GB) and return the dataframe
     """
     if save_to_load_from is not None:
-        path_csv = os.path.join(DATASETS_DIR, IMDB_REVIEW_1, save_to_load_from)
+        path_csv = os.path.join(DATASETS_DIR, IMDB_REVIEW_KAGGLE, save_to_load_from)
         if os.path.isfile(path_csv):
             return pd.read_csv(path_csv)
 
     def loadfile(id):
         file_name = f"part-0{id}.json"
-        path = os.path.join(DATASETS_DIR, IMDB_REVIEW_1, file_name)
+        path = os.path.join(DATASETS_DIR, IMDB_REVIEW_KAGGLE, file_name)
         if not os.path.isfile(path):
             raise Exception(
                 f"The file {file_name} is missing -> Please download the dataset from https://www.kaggle.com/datasets/ebiswas/imdb-review-dataset/data (See README)"
@@ -50,7 +50,6 @@ def load_movie_reviews_kaggle(df_movies, save_to_load_from="IMDBReviewsKaggle.cs
                 "reviewer",
                 "review_summary",
                 "review_date",
-                "spoiler_tag",
                 "helpful",
             ],
             axis=1,

@@ -3,6 +3,11 @@
 Tree of the data folder:
 ````
 data
+├── FinalData (Our scapped data)
+│   ├── final_dates.csv
+│   ├── scrapped_imdb_reviews.csv
+│   ├── final_reviews.csv (created with all the other datasets)
+│   └── final_movies.csv (created with all the other datasets)
 ├── IMDB (https://developer.imdb.com/non-commercial-datasets/)
 │   ├── title.basics.tsv
 │   └── title.ratings.tsv
