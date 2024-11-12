@@ -12,7 +12,20 @@ def load_imdb_movie_metadata():
     Returns a dataframe containing the data
     """
     path = os.path.join(DATASETS_DIR, IMDB_DIR, "title.basics.tsv")
-    df = pd.read_csv(path, sep="\t")
+    df = pd.read_csv(
+        path,
+        sep="\t",
+        dtype={
+            "tconst": str,
+            "titleType": str,
+            "primaryTitle": str,
+            "originalTitle": str,
+            "isAdult": str,
+            "startYear": str,
+            "endYear": str,
+            "genres": str,
+        },
+    )
 
     return df
 
