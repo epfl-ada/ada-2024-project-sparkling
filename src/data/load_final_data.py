@@ -89,9 +89,6 @@ def load_final_movies_and_reviews(
         if os.path.isfile(path_csv_reviews):
             df_final_reviews = pd.read_csv(path_csv_reviews)
 
-    # Whether we have to save the dataframes at the end.
-    only_load = (df_final_movies is not None) and (df_final_reviews is not None)
-
     # Load movie metadata
     df_movies_metadata, df_movies_language, df_movies_countries, df_movies_genres = (
         load_and_clean_movies_df()
@@ -204,6 +201,12 @@ def load_final_movies_and_reviews(
             [df_subset_above_max_reviews, df_reviews_below_max], axis=0
         )
 
+        # Save the dataframes
+        if save_to_load_from_movies is not None and df_final_movies is not None:
+            df_final_movies.to_csv(path_csv_movies, index=False)
+        if save_to_load_from_reviews is not None and df_final_reviews is not None:
+            df_final_reviews.to_csv(path_csv_reviews, index=False)
+
     df_final_language = df_movies_language[
         df_movies_language["wikipedia_ID"].isin(df_final_movies["wikipedia_ID"].values)
     ]
@@ -214,11 +217,6 @@ def load_final_movies_and_reviews(
         df_movies_genres["wikipedia_ID"].isin(df_final_movies["wikipedia_ID"].values)
     ]
 
-    if not only_load:
-        if save_to_load_from_movies is not None and df_final_movies is not None:
-            df_final_movies.to_csv(path_csv_movies, index=False)
-        if save_to_load_from_reviews is not None and df_final_reviews is not None:
-            df_final_reviews.to_csv(path_csv_reviews, index=False)
     return (
         df_final_movies,
         df_final_language,
