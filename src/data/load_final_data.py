@@ -69,6 +69,7 @@ def load_final_movies_and_reviews(
     If the file 'final_movies.csv/save_to_load_from_movies' and/or 'final_reviews.csv/save_to_load_from_reviews' exists,
     then load it, otherwise create the files
     """
+    MINIMUM_SENTENCES_PLOT = 10
     MINIMUM_REVIEWS_MOVIES = 10
     MAXIMUM_REVIEWS_MOVIES = 50
 
@@ -132,7 +133,8 @@ def load_final_movies_and_reviews(
 
         # The movie should at least have 10 sentences in its plot
         plot_number_sentences_minimum = (
-            df_movies_improved_dates["plot"].apply(lambda x: len(x.split("."))) >= 10
+            df_movies_improved_dates["plot"].apply(lambda x: len(x.split(".")))
+            >= MINIMUM_SENTENCES_PLOT
         )
         df_movies_plot_number_minimum = df_movies_improved_dates[
             plot_number_sentences_minimum
