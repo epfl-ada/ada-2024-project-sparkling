@@ -3,222 +3,208 @@ from transformers import pipeline
 import json
 from tqdm import tqdm
 import re
-import os
+
+MAX_CHAR = 1000 # maximum character per sentence for model compatibility
+EMOTIONS = ['anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise'] # list of supported emotions by the model
+
+# Initialize the classifier
+classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", top_k=None)
 
 
-# Predicts the emotions present in a given movie plot by using a pre-trained classifier.
-def predict_emotions_from_plot(classifier, plot: str):
-    plot = plot.strip()
-    plot = re.sub(r'<.*?>', '', plot)
-    plot = plot.replace('&ndash;', '–')
+def read_tsv(file_path):
+    '''
+    Reads a TSV file and returns a DataFrame, or None if the file doesn't exist.
     
-    # Return None for each emotion if the plot is empty
-    if plot.strip() == "":
-        return {label: None for label in predictions}
+    Args:
+        file_path (str): TSV file path.
+
+    Returns:
+        DataFrame: DataFrame corresponding to the TSV file.
+    '''
+    try:
+        return pd.read_csv(file_path, sep='\t')
+    except FileNotFoundError:
+        return None
+
+
+def write_tsv(df, file_path, mode='w'):
+    '''
+    Writes a DataFrame to a TSV file.
     
-    # Split the plot into sentences
-    sentences = plot.split('.')
-    if sentences[-1].strip() == "": # Remove the last element if empty
+    Args:
+        df (DataFrame): DataFrame to be saved.
+        file_path (str): TSV file path.
+        
+    Returns:
+        None
+    '''
+    df.to_csv(file_path, sep='\t', index=False, mode=mode)
+
+
+def preprocess_text(text):
+    '''
+    Preprocesses text by removing HTML tags, replacing specific characters, and splitting into truncated sentences.
+    
+    Args:
+        text (str): Text to preprocess before analyzing for emotions.
+
+    Returns:
+        list: List of sentences.
+    '''
+    text = re.sub(r'<.*?>', '', text).replace('&ndash;', '–').strip()
+    sentences = text.split('.')
+    
+    if sentences and sentences[-1].strip() == "":
         sentences = sentences[:-1]
-        
-    # Sentences fed to the model
+    
     final_sentences = []
-    
-    # Split sentences that are too long for the model
     for s in sentences:
-        while len(s) > 1300:
-            final_sentences.append(s[:1300].strip())
-            s = s[1300:]
-    
+        while len(s) > MAX_CHAR:
+            final_sentences.append(s[:MAX_CHAR].strip())
+            s = s[MAX_CHAR:]
         final_sentences.append(s.strip())
-        
-    anger_scores = []
-    disgust_scores = []
-    fear_scores = []
-    joy_scores = []
-    neutral_scores = []
-    sadness_scores = []
-    surprise_scores = []
-        
-    for s in final_sentences:
-        results = classifier(s) # classify the sentence into the 7 emotions
-        if not results:
-            continue
-            
-        results = results[0]
-        
-        # initializing emotion scores for the current sentence
-        predictions = {
-            'anger': 0,
-            'disgust': 0,
-            'fear': 0,
-            'joy': 0,
-            'neutral': 0,
-            'sadness': 0,
-            'surprise': 0
-        }
-        
-        # updating emotion scores for the current sentence
-        for result in results:
-            label = result['label']
-            score = result['score']
-            predictions[label] += score
-            
-        # adding each emotion score to their scores list for the plot
-        anger_scores.append(predictions['anger'])
-        disgust_scores.append(predictions['disgust'])
-        fear_scores.append(predictions['fear'])
-        joy_scores.append(predictions['joy'])
-        neutral_scores.append(predictions['neutral'])
-        sadness_scores.append(predictions['sadness'])
-        surprise_scores.append(predictions['surprise'])
-        
-    # return a JSON to be able to retrieve list objects when merging
-    emotion_predictions = {
-        'plot_sentences': final_sentences,
-        'anger': anger_scores,
-        'disgust': disgust_scores,
-        'fear': fear_scores,
-        'joy': joy_scores,
-        'neutral': neutral_scores,
-        'sadness': sadness_scores,
-        'surprise': surprise_scores
-    }
-        
-    return emotion_predictions
+    
+    return final_sentences
 
 
+def calculate_plot_emotion_scores(text):
+    '''
+    Calculates emotion scores per sentence for a plot.
 
-# Adds emotion prediction columns to a DataFrame of movies based on their plots and save them into a csv.
-def predict_emotions_to_csv(df_movies, column_to_predict, csv_path):
-    classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", top_k=None)
-    tqdm.pandas(desc="Processing emotions")
-    
-    # Emotion predictions
-    if column_to_predict == 'plot':
-        emotion_predictions = df_movies[column_to_predict].progress_apply(lambda plot: predict_emotions_from_plot(classifier, plot))
-    elif column_to_predict == 'review_detail':
-        emotion_predictions = df_movies[column_to_predict].progress_apply(lambda review: predict_emotions_from_review(classifier, review))
-    else:
-        raise ValueError("Argument 'column_to_predict' should be 'plot' or 'review_detail'.") 
-    
-    # Convert predictions to JSON
-    df_movies['emotion_predictions'] = emotion_predictions.apply(lambda x: json.dumps(x))
-    
-    # Save the DataFrame with columns  wikipedia_ID and emotion_predictions
-    df_movies.to_csv(csv_path, 
-                     columns=['wikipedia_ID', 'emotion_predictions'], 
-                     index=False)
-    
-    
-    
-# Function to merge the emotion predictions CSV with df_movies on wikipedia_ID
-def merge_df_movies_with_emotions_csv(df_movies, csv_path):
-    # Read CSV with emotion predictions
-    df_emotions = pd.read_csv(csv_path)
-    
-    # Decode column 'emotion_predictions' from JSON
-    df_emotions['emotion_predictions'] = df_emotions['emotion_predictions'].apply(lambda x: json.loads(x))
-    
-    # Extract data from predictions into separate columns
-    df_emotions['plot_sentences'] = df_emotions['emotion_predictions'].apply(lambda x: x['plot_sentences'])
-    df_emotions['anger'] = df_emotions['emotion_predictions'].apply(lambda x: x['anger'])
-    df_emotions['disgust'] = df_emotions['emotion_predictions'].apply(lambda x: x['disgust'])
-    df_emotions['fear'] = df_emotions['emotion_predictions'].apply(lambda x: x['fear'])
-    df_emotions['joy'] = df_emotions['emotion_predictions'].apply(lambda x: x['joy'])
-    df_emotions['neutral'] = df_emotions['emotion_predictions'].apply(lambda x: x['neutral'])
-    df_emotions['sadness'] = df_emotions['emotion_predictions'].apply(lambda x: x['sadness'])
-    df_emotions['surprise'] = df_emotions['emotion_predictions'].apply(lambda x: x['surprise'])
-    
-    # Merge with main DataFrame
-    merged_df = pd.merge(df_movies, df_emotions, on='wikipedia_ID')
-    merged_df = merged_df.drop('emotion_predictions', axis=1)
-    return merged_df
+    Args:
+        text (str): Plot text to analyze for emotions.
 
-
-
-# Predicts the emotions present in a given movie plot by using a pre-trained classifier.
-def predict_emotions_from_review(classifier, review: str):
-    review = review.strip()
-    review = re.sub(r'<.*?>', '', review)
-    review = review.replace('&ndash;', '–')
+    Returns:
+        dict: Dictionary with a list of sentences and individual emotion scores per sentence.
+    '''
+    sentences = preprocess_text(text)
+    scores = {emotion: [] for emotion in EMOTIONS}
     
-    # initializing emotion scores for the review
-    predictions = {
-        'anger': 0,
-        'disgust': 0,
-        'fear': 0,
-        'joy': 0,
-        'neutral': 0,
-        'sadness': 0,
-        'surprise': 0
-    }
-    
-    # Return None for each emotion if the plot is empty
-    if review.strip() == "":
-        return {label: None for label in predictions}
+    for sentence in sentences:
+        results = classifier(sentence)
+        predictions = {emotion: 0 for emotion in scores.keys()}
         
-    # Sentences fed to the model
-    sentences = []
-    
-    # Split into different sentences if length of review is larger than 1300
-    for i in range(0, len(review), 1300):
-        sentences.append(review[i:i+1300])
-    
+        for result in results[0]:
+            predictions[result['label']] += result['score']
+        
+        for emotion in scores:
+            scores[emotion].append(predictions[emotion])
+
+    return {'sentences': sentences, **scores}
+
+
+def calculate_review_emotion_scores(text):
+    '''
+    Calculates normalized emotion scores across the entire review.
+
+    Args:
+        text (str): Review text to analyze for emotions.
+
+    Returns:
+        dict: Dictionary with normalized emotion scores across the text.
+    '''
+    sentences = preprocess_text(text)
+    scores = {emotion: 0 for emotion in EMOTIONS}
     num_sentences = len(sentences)
+    
+    for sentence in sentences:
+        results = classifier(sentence)
         
-    for s in sentences:
-        results = classifier(s) # classify the sentence into the 7 emotions
-        if not results:
-            num_sentences -= 1
-            continue
-            
-        results = results[0]
-        
-        # updating emotion scores for the current sentence
-        for result in results:
-            label = result['label']
-            score = result['score']
-            predictions[label] += score
-            
-    # Average the scores across all sentences
+        for result in results[0]:
+            scores[result['label']] += result['score']
+    
+    # Normalize scores if there are sentences
     if num_sentences > 0:
-        predictions = {label: score / num_sentences for label, score in predictions.items()}
-        
-    # Return a JSON to be able to retrieve list objects when merging
-    emotion_predictions = {
-        'review_sentences': sentences,
-        'review_anger': predictions['anger'],
-        'review_disgust': predictions['disgust'],
-        'review_fear': predictions['fear'],
-        'review_joy': predictions['joy'],
-        'review_neutral': predictions['neutral'],
-        'review_sadness': predictions['sadness'],
-        'review_surprise': predictions['surprise']
-    }
-        
-    return emotion_predictions
+        total_score = sum(scores.values())
+        scores = {emotion: score / total_score for emotion, score in scores.items()}
+
+    return {'sentences': sentences, **scores}
 
 
-# Function to merge the emotion predictions CSV on reviews with df_movies on wikipedia_ID
-def merge_df_reviews_with_emotions_csv(df_movies, csv_path):
-    # Read CSV with emotion predictions
-    df_emotions = pd.read_csv(csv_path)
+def predict_emotions_to_tsv(df, column, file_path, id_column='wikipedia_ID', is_review=False):
+    '''
+    Predicts emotions for each entry in the specified column of the DataFrame and saves results to a TSV file.
+    Handles cases where multiple rows may share the same ID by using row indexes.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing text data for prediction.
+        column (str): Name of the column containing text to analyze.
+        file_path (str): Path to the TSV file where results will be saved.
+        id_column (str): Name of the column containing the unique ID for identifying rows. Default is 'wikipedia_ID'.
+        is_review (bool): Flag indicating whether the text is a review (True) or plot (False). Default is False.
+
+    Returns:
+        None
+    '''
+    existing_data = read_tsv(file_path)
+
+    # Find the last processed row index if the TSV file exists
+    last_index = None
+    if existing_data is not None:
+        last_index = len(existing_data) - 1  # Last written row
+
+    start_writing = last_index is None  # Start from beginning if no previous data
+
+    # Open TSV for appending new data
+    with open(file_path, 'a') as file:
+        if start_writing:
+            file.write(f"{id_column}\temotion_predictions\n")
+
+        for idx, row in tqdm(df.iterrows(), total=len(df), desc="Processing and saving"):
+            
+            if last_index is not None and idx <= last_index:  # Skip rows up to the last processed index
+                continue
+
+            # Predict emotions for the current row's text column
+            if is_review:
+                emotion_prediction = calculate_review_emotion_scores(row[column])
+            else:
+                emotion_prediction = calculate_plot_emotion_scores(row[column])
+            
+            emotion_json = json.dumps(emotion_prediction)
+
+            # Append row to TSV
+            file.write(f"{row[id_column]}\t{emotion_json}\n")
+
+
+
+
+
+def merge_df_with_emotions_tsv(df, file_path, prefix, is_review=False):
+    '''
+    Merges emotion predictions from a TSV into a DataFrame, with prefixed column names.
+    If is_review is True, merge in order. Otherwise, merge by 'wikipedia_ID'.
+
+    Args:
+        df (pd.DataFrame): DataFrame to merge with predictions.
+        file_path (str): Path to the TSV file with predictions.
+        prefix (str): Prefix for new columns.
+        is_review (bool): If True, merge in order of rows; otherwise, merge by 'wikipedia_ID'.
+
+    Returns:
+        pd.DataFrame: Merged DataFrame with original data and emotion scores.
+    '''
+    df_emotions = read_tsv(file_path)
+    if df_emotions is None:
+        raise FileNotFoundError(f"No TSV file found at '{file_path}' to merge.")
     
-    # Decode column 'emotion_predictions' from JSON
-    df_emotions['emotion_predictions'] = df_emotions['emotion_predictions'].apply(lambda x: json.loads(x))
+    # Parse the emotion predictions from JSON
+    df_emotions['emotion_predictions'] = df_emotions['emotion_predictions'].apply(json.loads)
     
-    # Extract data from predictions into separate columns
-    df_emotions['review_sentences'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_sentences'])
-    df_emotions['review_anger'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_anger'])
-    df_emotions['review_disgust'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_disgust'])
-    df_emotions['review_fear'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_fear'])
-    df_emotions['review_joy'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_joy'])
-    df_emotions['review_neutral'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_neutral'])
-    df_emotions['review_sadness'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_sadness'])
-    df_emotions['review_surprise'] = df_emotions['emotion_predictions'].apply(lambda x: x['review_surprise'])
+    # Extract individual emotion scores and create new columns with the specified prefix
+    for key in df_emotions['emotion_predictions'].iloc[0].keys():
+        df_emotions[f"{prefix}_{key}"] = df_emotions['emotion_predictions'].apply(lambda x: x[key])
     
-    # Merge with main DataFrame
-    merged_df = pd.merge(df_movies, df_emotions, on='wikipedia_ID')
-    merged_df = merged_df.drop('emotion_predictions', axis=1)
+    # Drop the 'emotion_predictions' column after expanding it
+    df_emotions.drop(columns=['emotion_predictions'], inplace=True)
+
+    # Merge in order or by 'wikipedia_ID' based on the 'is_review' argument
+    if is_review:
+        # If reviews, merge in order of rows (i.e., keep the rows aligned)
+        merged_df = pd.concat([df, df_emotions], axis=1)
+    else:
+        # If not reviews, merge by 'wikipedia_ID'
+        merged_df = pd.merge(df, df_emotions, on='wikipedia_ID', how='left')
+
     return merged_df
+
