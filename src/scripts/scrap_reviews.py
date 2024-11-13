@@ -8,30 +8,34 @@ import pandas as pd
 
 def scrape_imdb_reviews(movie_id):
     """
-    Scrap all the reviews of a movie given an IMDB id (tconst)
+    Scrap all the reviews of a movie given an IMDb id (tconst)
 
-    Returns a list of reviews, stars and whether the review
+    Args :
+    movie_id : the IMDb id of the movie we want information about
+
+    Returns: 
+    a list of reviews, stars and whether the review
     is a spoiler as three seperated lists
     """
 
-    print("scrapping for id " + str(movie_id))
-    # URL for the movie's reviews page on IMDb
+    #URL for the movie's reviews page on IMDb
     url = f"https://www.imdb.com/title/{movie_id}/reviews"
+    print(movie_id)
 
     driver = webdriver.Chrome()
     driver.get(url)
-    # to wait for the page to load
+    #sleep to wait for the page to load
     time.sleep(2)
 
     try:
         buttons = driver.find_elements(By.CLASS_NAME, "ipc-btn")
 
+        #expanding the page if more reviews have to be loaded
         tout_counter = 0
         for button in buttons:
             if button.text.strip() == "Tout":
                 tout_counter += 1
             if tout_counter == 2:
-                print("activating button Tout")
                 driver.execute_script(
                     "arguments[0].scrollIntoView();", button
                 )  # Scroll to the button to ensure it's visible
@@ -39,10 +43,10 @@ def scrape_imdb_reviews(movie_id):
                 button.click()
                 break
 
-        # to ensure the reviews load
+        # to ensure the remaining reviews load
         time.sleep(10)
 
-        # script to get all the spoilers quickly
+        #getting all the spoilers' buttons to reveal spoiling reviews
         js_script = """
                 const buttons = Array.from(document.querySelectorAll('span.ipc-btn__text'));
                 buttons.forEach(button => {
@@ -59,8 +63,9 @@ def scrape_imdb_reviews(movie_id):
 
         review_containers = soup.find_all("div", class_="ipc-list-card__content")
         reviews = []
+        #a score given by the reviewer, can be between 0 and 10.
         stars = []
-        # 0 if not, 1 otherwise
+        #1 if the review is a spoiler, 0 otherwise
         spoilers = []
         for container in review_containers:
             review_div = container.find("div", class_="ipc-html-content-inner-div")
@@ -90,6 +95,16 @@ def scrape_imdb_reviews(movie_id):
 
 
 def scrape_reviews(df, filename="scrapped_imdb_reviews.csv"):
+    """
+    Scrap all the reviews, stars and spoiler tags of all movies in the given dataframe
+
+    Args : 
+    df : dataframe containing the movies. It must contain a row called 'tconst' with the movies' IMDb IDs
+    filename : the csv file to store the movies with their new information in
+
+    Returns: 
+    None
+    """
     expanded_rows = []
     for index, row in df.iterrows():
         tconst = row["tconst"]
