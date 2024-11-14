@@ -7,8 +7,9 @@ def generate_emotion_genre_heatmap(df_genres, df_emotions):
 
     """
     Generates a heatmap showing the correlation between emotions and genres.
-    This function merges two DataFrames (one with genres and one with emotions) based on movie IDs so that each row represents a 
-    single movie with both its genre and emotion data, to calculates the correlation between emotions and genres.
+    This function merges two DataFrames (one with genres and one with emotions) based on movie IDs so that each 
+    row represents a single movie with both its genre and emotion data, to calculates the correlation between 
+    emotions and genres with pearson correlation method.
 
     Parameters:
     - df_genres (pd.DataFrame): DataFrame with binary columns representing different genres.
@@ -47,8 +48,8 @@ def plot_top_country_emotion_correlation(df_emotions, df_country):
     Plots the top 10 positive and negative correlations between emotions and countries.
     This function merges emotion and country data on 'wikipedia_ID' to ensure each row 
     represents a movie with its respective country and emotion scores. We calculate the 
-    correlation and identify the top 10 strongest positive and negative correlations 
-    between each emotion and countries.
+    correlation with pearson correlation and identify the top 10 strongest positive and 
+    negative correlations between each emotion and countries.
 
     Parameters:
     - df_emotions (pd.DataFrame): DataFrame containing emotion scores with 'wikipedia_ID'.
@@ -113,7 +114,7 @@ def plot_emotion_distribution_per_period(dataframe, period_column):
     # Create the plot
     plt.figure(figsize=(14, 8))
     bottom = None
-    colors = sns.color_palette("Dark2", len(emotions))  # Palette Spectral pour chaque émotion
+    colors = sns.color_palette("Dark2", len(emotions))  
 
     #One bar for each emotion
     for i, emotion in enumerate(emotions):
@@ -156,16 +157,16 @@ def calculate_deviation(dataframe, reference_period='release_month'):
     overall_mean = dataframe[emotions].mean()
     period_data = dataframe.groupby(reference_period)[emotions].mean()
 
-    deviation_index = period_data - overall_mean
+    deviation_from_mean = period_data - overall_mean
 
     #Plotting deviations
     plt.figure(figsize=(12, 6))
     for emotion in emotions:
         emotion_label = emotion.replace("normalized_plot_", "")
-        plt.plot(deviation_index.index, deviation_index[emotion], label=emotion_label)
+        plt.plot(deviation_from_mean.index, deviation_from_mean[emotion], label=emotion_label)
         
     plt.title("Index of deviation of emotions from the mean")
-    plt.xlabel("Month")
+    plt.xlabel(reference_period.replace('release_', '').capitalize())
     plt.ylabel("Deviation from the mean")
     plt.legend(title="Emotion", bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
