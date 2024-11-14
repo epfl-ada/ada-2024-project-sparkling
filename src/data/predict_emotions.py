@@ -87,18 +87,26 @@ def calculate_plot_emotion_scores(text):
     '''
     sentences = preprocess_text(text)
     scores = {emotion: [] for emotion in EMOTIONS}
-    
-    for sentence in sentences:
-        results = classifier(sentence)
+    valid_sentences = []
+
+    for idx, sentence in enumerate(sentences):
+        try:
+            results = classifier(sentence)
+        except Exception as e:
+            print(f"Error processing sentence {sentence} at index {idx} from text {text}: {e}")
+            continue
+        
         predictions = {emotion: 0 for emotion in scores.keys()}
         
         for result in results[0]:
             predictions[result['label']] += result['score']
         
+        valid_sentences.append(sentence)
+        
         for emotion in scores:
             scores[emotion].append(predictions[emotion])
 
-    return {'sentences': sentences, **scores}
+    return {'sentences': valid_sentences, **scores}
 
 
 def calculate_review_emotion_scores(text):
@@ -113,20 +121,28 @@ def calculate_review_emotion_scores(text):
     '''
     sentences = preprocess_text(text)
     scores = {emotion: 0 for emotion in EMOTIONS}
-    num_sentences = len(sentences)
+    valid_sentences = []
     
-    for sentence in sentences:
-        results = classifier(sentence)
+    for idx, sentence in enumerate(sentences):
+        try:
+            results = classifier(sentence)
+        except Exception as e:
+            print(f"Error processing sentence {sentence} at index {idx} from text {text}: {e}")
+            continue
+            
+        valid_sentences.append(sentence)
         
         for result in results[0]:
             scores[result['label']] += result['score']
     
-    # Normalize scores if there are sentences
+    # Normalize scores if there are valid sentences
+    num_sentences = len(valid_sentences)
     if num_sentences > 0:
         total_score = sum(scores.values())
-        scores = {emotion: score / total_score for emotion, score in scores.items()}
-
-    return {'sentences': sentences, **scores}
+        if total_score > 0:  # Prevent division by zero
+            scores = {emotion: score / total_score for emotion, score in scores.items()}
+    
+    return {'sentences': valid_sentences, **scores}
 
 
 def predict_emotions_to_tsv(df, column, file_name, id_column='wikipedia_ID', is_review=False):
