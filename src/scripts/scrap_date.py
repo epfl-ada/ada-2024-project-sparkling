@@ -139,20 +139,19 @@ def date_choice(dates):
             if np.isnan(month):
                 final_date = [year, month_scr]
             else:
-                if np.isnan(month_scr):
+                if np.isnan(month_scr) or month_scr == 1.0 or month_scr == 0:
                     final_date = [year, month]
                 else:
-                    if month_scr == 1.0:
-                        final_date = [year, month]
-                    else:
-                        final_date = [year, month_scr]
+                    final_date = [year, month_scr]
         else:
             if np.isnan(month):
                 final_date = [year_scr, month_scr]
             else:
                 final_date = [year, month]
 
-    return pd.Series(final_date)
+    return pd.Series(
+        final_date
+    )  # pd.DataFrame(data={'release_year': [final_date[0]], 'release_month': [final_date[1]]})
 
 
 def get_final_dates(df):
@@ -171,7 +170,9 @@ def get_final_dates(df):
     final_df = final_df.drop(
         (
             final_df[
-                np.isnan(final_df["release_year"]) | np.isnan(final_df["release_month"])
+                np.isnan(final_df["release_year"])
+                | np.isnan(final_df["release_month"])
+                | (final_df["release_month"] == 0)
             ]
         ).index
     )
