@@ -149,9 +149,7 @@ def date_choice(dates):
             else:
                 final_date = [year, month]
 
-    return pd.Series(
-        final_date
-    )  # pd.DataFrame(data={'release_year': [final_date[0]], 'release_month': [final_date[1]]})
+    return pd.Series(final_date)
 
 
 def get_final_dates(df):
