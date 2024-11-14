@@ -4,6 +4,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def generate_emotion_genre_heatmap(df_genres, df_emotions):
+
+    """
+    Generates a heatmap showing the correlation between emotions and genres.
+    This function merges two DataFrames (one with genres and one with emotions) based on movie IDs so that each row represents a 
+    single movie with both its genre and emotion data, to calculates the correlation between emotions and genres.
+
+    Parameters:
+    - df_genres (pd.DataFrame): DataFrame with binary columns representing different genres.
+    - df_emotions (pd.DataFrame): DataFrame containing columns for normalized emotion scores per movie.
+
+    Returns:
+    - A heatmap of the correlation matrix.
+    """
     
     genre_columns = df_genres.columns.difference(['wikipedia_ID'])
     emotion_columns = ['normalized_plot_anger', 'normalized_plot_disgust', 'normalized_plot_fear', 
@@ -29,6 +42,21 @@ def generate_emotion_genre_heatmap(df_genres, df_emotions):
     plt.show()
 
 def plot_top_country_emotion_correlation(df_emotions, df_country):
+
+    """
+    Plots the top 10 positive and negative correlations between emotions and countries.
+    This function merges emotion and country data on 'wikipedia_ID' to ensure each row 
+    represents a movie with its respective country and emotion scores. We calculate the 
+    correlation and identify the top 10 strongest positive and negative correlations 
+    between each emotion and countries.
+
+    Parameters:
+    - df_emotions (pd.DataFrame): DataFrame containing emotion scores with 'wikipedia_ID'.
+    - df_country (pd.DataFrame): DataFrame containing country information with 'wikipedia_ID'.
+
+    Returns:
+    - Bar plots for each emotion with the top positive and negative correlations by country.
+    """
     
     emotion_columns = ['normalized_plot_anger', 'normalized_plot_disgust', 'normalized_plot_fear', 
                        'normalized_plot_joy', 'normalized_plot_sadness', 'normalized_plot_surprise']
@@ -61,6 +89,19 @@ def plot_top_country_emotion_correlation(df_emotions, df_country):
         plt.show()
 
 def plot_emotion_distribution_per_period(dataframe, period_column):
+
+    """
+    Generates a stacked bar chart of emotion distribution for each period : in our case we use it for months ans years.
+    For each period (month or year), we split a 1-unit bar into segments representing the proportion of each emotion 
+    within that period.
+
+    Parameters:
+    - dataframe (pd.DataFrame): DataFrame with emotion scores and specified period column.
+    - period_column (str): Column name for grouping data ('release_year' or 'release_month').
+
+    Returns:
+    - Stacked bar chart showing the distribution of each emotion per period.
+    """
     
     emotions = ['normalized_plot_anger', 'normalized_plot_disgust', 'normalized_plot_fear', 
                 'normalized_plot_joy', 'normalized_plot_sadness', 'normalized_plot_surprise']
@@ -95,6 +136,19 @@ def plot_emotion_distribution_per_period(dataframe, period_column):
     plt.show()
 
 def calculate_deviation(dataframe, reference_period='release_month'):
+
+    """
+    Plots the deviation of emotions from their overall mean across the specified period to observe fluctuations or trends 
+    in emotion intensities over time. This visualization helps to identify periods where certain emotions are notably higher 
+    or lower than their overall average, providing insights into potential seasonal variations in emotional content.
+    
+    Parameters:
+    - dataframe (pd.DataFrame): DataFrame containing emotion scores and the specified period column.
+    - reference_period (str): The column name representing the period to group by ('release_month' or 'release_year').
+    
+    Returns:
+    - Line plot showing the deviation of each emotion from its overall mean over the specified period.
+    """
     
     emotions = ['normalized_plot_anger', 'normalized_plot_disgust', 'normalized_plot_fear', 
                 'normalized_plot_joy', 'normalized_plot_sadness', 'normalized_plot_surprise']
@@ -117,6 +171,19 @@ def calculate_deviation(dataframe, reference_period='release_month'):
     plt.show()
 
 def plot_major_emotion_per_five_years(dataframe, year_column='release_year'):
+
+    """
+    This function groups data by five year intervals and finds the dominant emotion 
+    (the one with the highest average score) in each period. It then visualizes the 
+    percentage of the dominant emotion per period.
+
+    Parameters:
+    - dataframe (pd.DataFrame): DataFrame containing emotion scores and a release year column.
+    - year_column (str): Column name for the release year (default is 'release_year').
+
+    Returns:
+    - Bar plot with the dominant emotion and its average percentage per period.
+    """
     
     emotions = ['normalized_plot_anger', 'normalized_plot_disgust', 'normalized_plot_fear', 
                 'normalized_plot_joy', 'normalized_plot_sadness', 'normalized_plot_surprise']
