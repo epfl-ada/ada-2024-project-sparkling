@@ -70,6 +70,10 @@ def plot_movies_over_time_years(df_movies):
     ]
     ax.set_xticks(list_labels_years, labels=list_labels_years)
 
+    ax.set_title("Movie release over time (year precision)", fontsize=TITLE_FONT_SIZE)
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Number of movies")
+
 
 def plot_pie_genres_proportion(df_genres):
     """
