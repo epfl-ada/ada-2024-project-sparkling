@@ -45,6 +45,23 @@ def load_scrapped_imdb_reviews():
     return load_final_files("scrapped_imdb_reviews.csv")
 
 
+def remove_not_used_one_hot_encoding(df):
+    """
+    Given a dataframe containing an one hot encoding, return the same dataframe but removing the columns
+    where the one hot encoding is always equal to False
+
+    Argument:
+        - df: Dataframe containing the one hot encoding
+
+    Return:
+        The same Dataframe without the columns where the one hot encoding is always equal to False
+    """
+    column_to_remove_boolean = df.sum() == 0
+    column_to_remove_list = column_to_remove_boolean[column_to_remove_boolean].index
+
+    return df.drop(column_to_remove_list, axis=1)
+
+
 def load_final_movies_and_reviews(
     save_to_load_from_movies="final_movies.csv",
     save_to_load_from_reviews="final_reviews.csv",
@@ -224,6 +241,10 @@ def load_final_movies_and_reviews(
     df_final_genres = df_movies_genres[
         df_movies_genres["wikipedia_ID"].isin(df_final_movies["wikipedia_ID"].values)
     ]
+
+    df_final_language = remove_not_used_one_hot_encoding(df_final_language)
+    df_final_countries = remove_not_used_one_hot_encoding(df_final_countries)
+    df_final_genres = remove_not_used_one_hot_encoding(df_final_genres)
 
     return (
         df_final_movies,
