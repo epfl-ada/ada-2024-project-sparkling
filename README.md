@@ -1,6 +1,14 @@
 # SPARKling
 
+## Installation
+```
+conda create --name <env_name> python=3.11.9
+conda activate <env_name>
+pip install -r pip_requirements.txt
+```
+
 Tree of the data folder:
+
 ````
 data
 ├── FinalData (Our scapped data)
