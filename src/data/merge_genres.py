@@ -24,9 +24,19 @@ genres_dict = {
 }
 
 import pandas as pd
+
 def get_genres_merged(df):
-    df_merged = pd.DataFrame({'wikipedia_ID': df.wikipedia_ID})
+    '''
+    For each genre, create a new column in 'df_merged' with the genre name and set it to 'True'
+    if any of the subgenres in 'subgenres' are True in 'df', for each row.
+    Arguments:
+        df: DataFrame containing subgenres
+    Returns:
+        df_merged: DataFrame containing genres
+    '''
+    
+    df_merged = pd.DataFrame({'wikipedia_ID': df.wikipedia_ID}) # Create a new DataFrame with the wiki ids.
     for genre, subgenres in genres_dict.items():
-        df_merged[genre] = df[subgenres].any(axis=1)
+        df_merged[genre] = df[subgenres].any(axis=1) # Set genre entry to True each time one of its subgenres is True for a movie.
     return df_merged
 
