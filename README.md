@@ -6,8 +6,6 @@ conda create --name <env_name> python=3.11.9
 conda activate <env_name>
 pip install -r pip_requirements.txt
 ```
-
-
 ## Project proposal 
 
 From screen to heart : how do emotions shape the cinematic landscape ?
@@ -57,8 +55,6 @@ Week 4 -  16.12 : Finalizing the website and report writing
 
 ## Project structure
 
-
-
 Tree of the data folder:
 
 ````
@@ -87,5 +83,4 @@ data
     ├── name.clusters.txt
     ├── plot_summaries.txt
     └── tvtropes.clusters.txt
-src
 ```
