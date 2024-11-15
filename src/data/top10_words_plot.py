@@ -9,13 +9,14 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 import re
 
 nltk.download('stopwords')
+nltk.download('wordnet')
 
-def show_top_10_words_per_emotion(df_movies_with_emotions, top_emotions=1, output_dir='emotion_word_plots'):
+def show_top_10_words_per_emotion(df_movies_with_emotions_normalized, top_emotions=1, output_dir='emotion_word_plots'):
     """
     Displays and saves bar plots of the top 10 words associated with each dominant emotion in movie plots.
 
     Args:
-    df_movies_with_emotions (pd.DataFrame): DataFrame containing columns for normalized emotion scores and plots.
+    df_movies_with_emotions_normalized (pd.DataFrame): DataFrame containing columns for normalized emotion scores and plots.
     top_emotions (int): Number of top emotions to consider per plot.
     output_dir (str): Directory path where plots will be saved.
     """
@@ -27,7 +28,7 @@ def show_top_10_words_per_emotion(df_movies_with_emotions, top_emotions=1, outpu
     ]
 
     # Identify top emotions per movie plot and store in a new column
-    df_movies_with_emotions['top_emotions'] = df_movies_with_emotions[emotion_columns].apply(
+    df_movies_with_emotions_normalized['top_emotions'] = df_movies_with_emotions_normalized[emotion_columns].apply(
         lambda row: row.nlargest(top_emotions).index.tolist(), axis=1
     )
 
@@ -39,7 +40,7 @@ def show_top_10_words_per_emotion(df_movies_with_emotions, top_emotions=1, outpu
     word_counts_by_emotion = {emotion: Counter() for emotion in emotion_columns}
 
     # Process each plot text to update word counts by associated top emotions
-    for _, row in df_movies_with_emotions.iterrows():
+    for _, row in df_movies_with_emotions_normalized.iterrows():
         plot_text = row['plot'].lower()
         for emotion in row['top_emotions']:
             if emotion in word_counts_by_emotion:
