@@ -156,6 +156,16 @@ def date_choice(dates):
     return pd.Series(final_date)
 
 
+def load_final_dates():
+    """
+    Load the final dates file in the FinalData folder
+
+    Returns:
+        The dataframe containing the final dates
+    """
+    path_to_file = os.path.join(DATASETS_DIR, FINAL_DATA_DIR, "final_dates.csv")
+    return pd.read_csv(path_to_file)
+
 def get_final_dates(df):
     """
     Arguments:

@@ -1,8 +1,11 @@
 import time
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 from selenium.webdriver.support import expected_conditions as EC
+from src.data.load_data import DATASETS_DIR
+from src.data.load_final_data import FINAL_DATA_DIR
 import pandas as pd
 
 
@@ -119,4 +122,6 @@ def scrape_reviews(df, filename="scrapped_imdb_reviews.csv"):
         columns=list(df.columns) + ["review_summary", "rating", "spoiler_tag"],
     )
 
-    expanded_df_next.to_csv(filename, index=False)
+    path_to_file = os.path.join(DATASETS_DIR, FINAL_DATA_DIR, filename)
+
+    expanded_df_next.to_csv(path_to_file, index=False)
