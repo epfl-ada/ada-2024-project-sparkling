@@ -15,17 +15,17 @@ COLORS = {
 def generate_emotion_genre_heatmap(df_genres, df_emotions):
 
     """
-    Generates a heatmap showing the correlation between emotions and genres.
+    Generates a heatmap showing the correlation and p-values between emotions and genres.
     This function merges two DataFrames (one with genres and one with emotions) based on movie IDs so that each 
     row represents a single movie with both its genre and emotion data, to calculates the correlation between 
-    emotions and genres with pearson correlation method.
+    emotions and genres with pearson correlation method, and their p-values.
 
     Parameters:
     - df_genres (pd.DataFrame): DataFrame with binary columns representing different genres.
     - df_emotions (pd.DataFrame): DataFrame containing columns for normalized emotion scores per movie.
 
     Returns:
-    - A heatmap of the correlation matrix.
+    - A heatmap of the correlations and p-values.
     """
     
     genre_columns = df_genres.columns.difference(['wikipedia_ID'])
@@ -35,19 +35,44 @@ def generate_emotion_genre_heatmap(df_genres, df_emotions):
     #To have in each line the emotions and genres corresponding to the same movie
     df_with_emotions_and_genres = pd.merge(df_genres, df_emotions, on='wikipedia_ID', how='inner')
 
-    #Calcultion avec the correlation matrix
-    correlation_matrix = pd.concat([df_with_emotions_and_genres[emotion_columns], 
-                                    df_with_emotions_and_genres[genre_columns].astype(float)], 
-                                    axis=1).corr(method='pearson').loc[emotion_columns, genre_columns] 
+    #Initialize matrices for correlations and p-values
+    correlation_matrix = pd.DataFrame(index=emotion_columns, columns=genre_columns)
+    p_value_matrix = pd.DataFrame(index=emotion_columns, columns=genre_columns)
 
-    #Plotting the data 
+    #Calculate correlations and p-values
+    for emotion in emotion_columns:
+        for genre in genre_columns:
+            corr, p_value = pearsonr(
+                df_with_emotions_and_genres[emotion], 
+                df_with_emotions_and_genres[genre].astype(float)
+            )
+            correlation_matrix.loc[emotion, genre] = corr
+            p_value_matrix.loc[emotion, genre] = p_value
+
+    #Convert matrices to float for plotting
+    correlation_matrix = correlation_matrix.astype(float)
+    p_value_matrix = p_value_matrix.astype(float)
+
+    
     emotion_labels = [emotion.replace('normalized_plot_', '') for emotion in emotion_columns]
+
+    #Plotting the correlation heatmap
     plt.figure(figsize=(12, 8))
     sns.heatmap(correlation_matrix, cmap="coolwarm", center=0, cbar=True, annot=True, fmt=".2f",
                 annot_kws={"size": 7}, linewidths=0.5, yticklabels=emotion_labels)
     plt.xticks(rotation=45, ha='right', fontsize=9)
     plt.yticks(rotation=0, fontsize=9)
     plt.title('Correlation between emotions and genres', fontsize=14)
+    plt.tight_layout()
+    plt.show()
+
+    #Plotting the p-value heatmap
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(p_value_matrix, cmap="coolwarm", center=0, cbar=True, annot=True, fmt=".1e",
+                annot_kws={"size": 6}, linewidths=0.5, yticklabels=emotion_labels)
+    plt.xticks(rotation=45, ha='right', fontsize=9)
+    plt.yticks(rotation=0, fontsize=9)
+    plt.title('P-values between emotions and genres', fontsize=14)
     plt.tight_layout()
     plt.show()
 
@@ -214,7 +239,6 @@ def plot_major_emotion_per_five_years(dataframe, year_column='release_year'):
     period_means['Percentage'] = dominant_percentage
     
     #Plotting
-
     plt.figure(figsize=(14, 6))
     sns.barplot(x=period_means.index, y='Percentage', hue='Dominant Emotion', data=period_means, palette=COLORS)
     plt.title("Dominant emotion for each quinquennium")
