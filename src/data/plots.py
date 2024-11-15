@@ -3,6 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+COLORS = {
+    'joy': '#f3c35f',
+    'anger': '#e13c29',
+    'disgust': '#8bc664',
+    'sadness': '#85b8ed',
+    'fear': '#b99be5',
+    'surprise': '#de9b81fc'
+}
+
 def generate_emotion_genre_heatmap(df_genres, df_emotions):
 
     """
@@ -80,8 +89,12 @@ def plot_top_country_emotion_correlation(df_emotions, df_country):
         top_negative = correlation_matrix.loc[emotion].nsmallest(10)
         top_countries = pd.concat([top_positive, top_negative])
 
+        emotion_label = emotion.replace('normalized_plot_', '')
+        emotion_color = COLORS[emotion_label]
+        
         plt.figure(figsize=(12, 8))
-        sns.barplot(x=top_countries.index, y=top_countries.values, palette="coolwarm", legend=False, hue=top_countries.index)
+        sns.barplot(x=top_countries.index, y=top_countries.values, palette="coolwarm", legend=False, hue=top_countries.index, 
+                    color=emotion_color)
         plt.title(f"Top 10 positive and negative country correlations with {emotion.replace('normalized_plot_', '')}")
         plt.xlabel("Country")
         plt.ylabel("Correlation")
@@ -113,19 +126,19 @@ def plot_emotion_distribution_per_period(dataframe, period_column):
     
     # Create the plot
     plt.figure(figsize=(14, 8))
-    bottom = None
-    colors = sns.color_palette("Dark2", len(emotions))  
+    bottom = None  
 
     #One bar for each emotion
     for i, emotion in enumerate(emotions):
         emotion_label = emotion.replace("normalized_plot_", "")
+        emotion_color = COLORS[emotion_label]
         if bottom is None:
             bottom = period_emotion_distribution[emotion]
             plt.bar(period_emotion_distribution.index, period_emotion_distribution[emotion], 
-                    label=emotion_label, color=colors[i])
+                    label=emotion_label, color=emotion_color)
         else:
             plt.bar(period_emotion_distribution.index, period_emotion_distribution[emotion], bottom=bottom, 
-                    label=emotion_label, color=colors[i])
+                    label=emotion_label, color=emotion_color)
             bottom += period_emotion_distribution[emotion]
 
     plt.title(f"Distribution of emotions per {period_column.replace('release_', '')}")
@@ -163,7 +176,8 @@ def calculate_deviation(dataframe, reference_period='release_month'):
     plt.figure(figsize=(12, 6))
     for emotion in emotions:
         emotion_label = emotion.replace("normalized_plot_", "")
-        plt.plot(deviation_from_mean.index, deviation_from_mean[emotion], label=emotion_label)
+        emotion_color = COLORS[emotion_label]
+        plt.plot(deviation_from_mean.index, deviation_from_mean[emotion], label=emotion_label, color=emotion_color)
         
     plt.title("Index of deviation of emotions from the mean")
     plt.xlabel(reference_period.replace('release_', '').capitalize())
@@ -204,8 +218,11 @@ def plot_major_emotion_per_five_years(dataframe, year_column='release_year'):
     period_means['Percentage'] = dominant_percentage
     
     #Plotting
+    emotion_label = emotion.replace('normalized_plot_', '')
+    emotion_color = COLORS[emotion_label]
+
     plt.figure(figsize=(14, 6))
-    sns.barplot(x=period_means.index, y='Percentage', hue='Dominant Emotion', data=period_means)
+    sns.barplot(x=period_means.index, y='Percentage', hue='Dominant Emotion', data=period_means, color=emotion_color)
     plt.title("Dominant emotion for each quinquennium")
     plt.xlabel("Five year period")
     plt.ylabel("Proportion")
