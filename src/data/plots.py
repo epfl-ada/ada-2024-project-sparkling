@@ -88,13 +88,10 @@ def plot_top_country_emotion_correlation(df_emotions, df_country):
         top_positive = correlation_matrix.loc[emotion].nlargest(10)
         top_negative = correlation_matrix.loc[emotion].nsmallest(10)
         top_countries = pd.concat([top_positive, top_negative])
-
-        emotion_label = emotion.replace('normalized_plot_', '')
-        emotion_color = COLORS[emotion_label]
         
         plt.figure(figsize=(12, 8))
         sns.barplot(x=top_countries.index, y=top_countries.values, palette="coolwarm", legend=False, hue=top_countries.index, 
-                    color=emotion_color)
+                    cmap="coolwarm_r")
         plt.title(f"Top 10 positive and negative country correlations with {emotion.replace('normalized_plot_', '')}")
         plt.xlabel("Country")
         plt.ylabel("Correlation")
@@ -218,11 +215,9 @@ def plot_major_emotion_per_five_years(dataframe, year_column='release_year'):
     period_means['Percentage'] = dominant_percentage
     
     #Plotting
-    emotion_label = emotion.replace('normalized_plot_', '')
-    emotion_color = COLORS[emotion_label]
 
     plt.figure(figsize=(14, 6))
-    sns.barplot(x=period_means.index, y='Percentage', hue='Dominant Emotion', data=period_means, color=emotion_color)
+    sns.barplot(x=period_means.index, y='Percentage', hue='Dominant Emotion', data=period_means, palette=COLORS)
     plt.title("Dominant emotion for each quinquennium")
     plt.xlabel("Five year period")
     plt.ylabel("Proportion")
