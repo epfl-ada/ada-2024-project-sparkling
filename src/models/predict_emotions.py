@@ -5,6 +5,8 @@ from tqdm import tqdm
 import re
 import os
 
+from src.data.load_data import DATASETS_DIR
+
 MAX_CHAR = 1000  # Maximum character per sentence for model compatibility
 EMOTIONS = ['anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise']  # List of supported emotions by the model
 
@@ -12,10 +14,10 @@ EMOTIONS = ['anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise']
 classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", top_k=None)
 
 # Define the data directory
-DATA_DIR = 'data/PredictedEmotions'
+PREDICTED_EMOTIONS_DIR = os.path.join(DATASETS_DIR, 'PredictedEmotions')
 
 # Ensure the data directory exists
-os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(PREDICTED_EMOTIONS_DIR, exist_ok=True)
 
 def read_tsv(file_name):
     '''
@@ -27,7 +29,7 @@ def read_tsv(file_name):
     Returns:
         DataFrame: DataFrame corresponding to the TSV file.
     '''
-    file_path = os.path.join(DATA_DIR, file_name)  # Construct file path
+    file_path = os.path.join(PREDICTED_EMOTIONS_DIR, file_name)  # Construct file path
     try:
         return pd.read_csv(file_path, sep='\t')
     except FileNotFoundError:
@@ -45,7 +47,7 @@ def write_tsv(df, file_name, mode='w', header=True):
     Returns:
         None
     '''
-    file_path = os.path.join(DATA_DIR, file_name)  # Construct file path
+    file_path = os.path.join(PREDICTED_EMOTIONS_DIR, file_name)  # Construct file path
     df.to_csv(file_path, sep='\t', index=False, mode=mode, header=header)
 
 

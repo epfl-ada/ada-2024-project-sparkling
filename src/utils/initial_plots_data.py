@@ -11,6 +11,7 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 nltk.download("stopwords")
+nltk.download('wordnet')
 
 FONT_SIZE = 12
 TITLE_FONT_SIZE = 15
@@ -75,18 +76,10 @@ def plot_movies_over_time_years(df_movies):
 
     sorted_bins_years = df_movies["release_year"].value_counts().sort_index()
     fig, ax = plt.subplots(figsize=(11, 7))
-    sns.barplot(x=sorted_bins_years.index, y=sorted_bins_years.values, ax=ax)
-
-    # Force the first and last label to appear
-    first_date = sorted_bins_years.index[0]
-    last_date = sorted_bins_years.index[-1]
-    STEP_YEARS = 10
-
-    list_labels_years = [
-        str(x) for x in list(range(first_date, last_date + 1, STEP_YEARS))
-    ]
-    ax.set_xticks(list_labels_years, labels=list_labels_years)
-
+    sns.barplot(x=sorted_bins_years.index.astype(str), y=sorted_bins_years.values, ax=ax)
+    
+    ax.set_xticks(ax.get_xticks()[::10])
+    
     ax.set_title("Movie release over time (year precision)", fontsize=TITLE_FONT_SIZE)
     ax.set_xlabel("Time")
     ax.set_ylabel("Number of movies")
@@ -163,7 +156,7 @@ def plot_donut_top_countries(df_countries, top=10, exclude_countries=None):
 
 
 def show_top_10_words_per_emotion(
-    df_movies_with_emotions, top_emotions=1, output_dir="emotion_word_plots"
+    df_movies_with_emotions_normalized, top_emotions=1, output_dir="emotion_word_plots"
 ):
     """
     Displays and saves bar plots of the top 10 words associated with each dominant emotion in movie plots.
@@ -185,7 +178,7 @@ def show_top_10_words_per_emotion(
     ]
 
     # Identify top emotions per movie plot and store in a new column
-    df_movies_with_emotions["top_emotions"] = df_movies_with_emotions[
+    df_movies_with_emotions_normalized["top_emotions"] = df_movies_with_emotions_normalized[
         emotion_columns
     ].apply(lambda row: row.nlargest(top_emotions).index.tolist(), axis=1)
 
@@ -197,7 +190,7 @@ def show_top_10_words_per_emotion(
     word_counts_by_emotion = {emotion: Counter() for emotion in emotion_columns}
 
     # Process each plot text to update word counts by associated top emotions
-    for _, row in df_movies_with_emotions.iterrows():
+    for _, row in df_movies_with_emotions_normalized.iterrows():
         plot_text = row["plot"].lower()
         for emotion in row["top_emotions"]:
             if emotion in word_counts_by_emotion:

@@ -1,6 +1,10 @@
 import requests
 import pandas as pd
 import numpy as np
+import os
+from src.data.load_data import DATASETS_DIR
+
+FINAL_DATA_DIR = 'FinalData'
 
 
 def wikidata_from_wikipedia_id(wikipedia_id, language="en"):
@@ -70,7 +74,7 @@ def format_date_numeric(date_str):
     return year_month[:4], year_month[5:]
 
 
-def scrap_years_months_movies(df_movies, path_to_csv="dates_scraped.csv"):
+def scrap_years_months_movies(df_movies, path_to_csv="final_dates.csv"):
     """
     Scrap years and months of the publication date of the movies and save the scrapped values in path_to_csv
 
@@ -105,7 +109,7 @@ def scrap_years_months_movies(df_movies, path_to_csv="dates_scraped.csv"):
 
         # save the file with the new scraped dates
         # We are saving it at each iteration as it may take time to run.
-        df_movies_scraped.to_csv(path_to_csv, index=False)
+        df_movies_scraped.to_csv(os.path.join(DATASETS_DIR, FINAL_DATA_DIR, path_to_csv), index=False)
 
 
 def date_choice(dates):
