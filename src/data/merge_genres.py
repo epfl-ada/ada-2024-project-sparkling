@@ -27,8 +27,10 @@ import pandas as pd
 
 def get_genres_merged(df):
     '''
-    For each genre, create a new column in 'df_merged' with the genre name and set it to 'True'
-    if any of the subgenres in 'subgenres' are True in 'df', for each row.
+    Create a simplified DataFrame by grouping subgenre columns into broader genre categories.
+    Each broader genre will have its own column, set to `True` if any of its corresponding subgenres 
+    in the original DataFrame are `True`.
+    
     Arguments:
         df: DataFrame containing subgenres
     Returns:
