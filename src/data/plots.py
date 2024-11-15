@@ -1,7 +1,7 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.stats import pearsonr
 
 COLORS = {
     'joy': '#f3c35f',
@@ -68,8 +68,8 @@ def generate_emotion_genre_heatmap(df_genres, df_emotions):
 
     #Plotting the p-value heatmap
     plt.figure(figsize=(12, 8))
-    sns.heatmap(p_value_matrix, cmap="coolwarm", center=0, cbar=True, annot=True, fmt=".1e",
-                annot_kws={"size": 6}, linewidths=0.5, yticklabels=emotion_labels)
+    sns.heatmap(p_value_matrix, cmap="Greens_r", center=0, cbar=True, annot=True, fmt=".1e",
+                annot_kws={"size": 6}, linewidths=0.5, yticklabels=emotion_labels, vmax=0.05)
     plt.xticks(rotation=45, ha='right', fontsize=9)
     plt.yticks(rotation=0, fontsize=9)
     plt.title('P-values between emotions and genres', fontsize=14)
