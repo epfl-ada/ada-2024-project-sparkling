@@ -13,7 +13,7 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 nltk.download("stopwords")
 nltk.download('wordnet')
 
-FONT_SIZE = 12
+FONT_SIZE = 10
 TITLE_FONT_SIZE = 15
 COLORS = {
     'joy': '#f3c35f',
@@ -92,7 +92,7 @@ def plot_pie_genres_proportion(df_genres):
     Argument:
         - df_genres: One hot encoding of the genres for each movies
     """
-    plt.figure(figsize=(11, 7))
+    plt.figure(figsize=(12, 12))
 
     genres = df_genres
     if "wikipedia_ID" in df_genres.columns:
@@ -107,15 +107,15 @@ def plot_pie_genres_proportion(df_genres):
         labels=genres_counts.index,
         colors=sns.color_palette("colorblind"),
         autopct="%1.2f%%",
-        pctdistance=0.8,
-        rotatelabels=True,
+        pctdistance=0.9,
+        rotatelabels=True
     )
     for label, pct_text in zip(labels, pct_texts):
         pct_text.set_rotation(label.get_rotation())
         pct_text.set_fontsize(FONT_SIZE)
         label.set_fontsize(FONT_SIZE)
 
-    plt.title("Proportion of genres", fontsize=TITLE_FONT_SIZE, y=1.2)
+    plt.title("Proportion of genres", fontsize=TITLE_FONT_SIZE, y=1.05)
 
 
 def plot_donut_top_countries(df_countries, top=10, exclude_countries=None):
