@@ -88,7 +88,7 @@ Week 4 -  16.12 : Finalizing the website and report writing <br>
 │   ├── data                      <- Data directory with methods related to it
 │   ├── models                    <- Model directory
 │   ├── utils                     <- Utility directory
-│   └── scripts                   <- Addtional scripts
+│   └── scripts                   <- Additional scripts
 │                        
 │
 ├── results.ipynb                 <- A well-structured notebook showing the results
