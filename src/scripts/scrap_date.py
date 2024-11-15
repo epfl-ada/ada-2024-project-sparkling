@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 from src.data.load_data import DATASETS_DIR
+from src.data.load_final_data import load_final_files
 
 FINAL_DATA_DIR = 'FinalData'
 
@@ -74,13 +75,14 @@ def format_date_numeric(date_str):
     return year_month[:4], year_month[5:]
 
 
-def scrap_years_months_movies(df_movies, path_to_csv="final_dates.csv"):
+def scrap_years_months_movies(df_movies, file_name="scrapped_dates.csv"):
     """
     Scrap years and months of the publication date of the movies and save the scrapped values in path_to_csv
 
     Arguments:
         - df_movies: Dataframe containing the movie wikipedia_ID along
         with their publication date (release_year and release_month)
+        - file_name: File name to the csv
 
     """
 
@@ -109,7 +111,7 @@ def scrap_years_months_movies(df_movies, path_to_csv="final_dates.csv"):
 
         # save the file with the new scraped dates
         # We are saving it at each iteration as it may take time to run.
-        df_movies_scraped.to_csv(os.path.join(DATASETS_DIR, FINAL_DATA_DIR, path_to_csv), index=False)
+        df_movies_scraped.to_csv(os.path.join(DATASETS_DIR, FINAL_DATA_DIR, file_name), index=False)
 
 
 def date_choice(dates):
@@ -156,15 +158,24 @@ def date_choice(dates):
     return pd.Series(final_date)
 
 
-def load_final_dates():
+def load_scrapped_dates():
     """
-    Load the final dates file in the FinalData folder
+    Load the scrapped dates file in the FinalData folder
+
+    Returns:
+        The dataframe containing the scrapped dates
+    """
+    return load_final_files("scrapped_dates.csv")
+
+def save_final_dates(df):
+    """
+    Save the final dates file in the FinalData folder
 
     Returns:
         The dataframe containing the final dates
     """
     path_to_file = os.path.join(DATASETS_DIR, FINAL_DATA_DIR, "final_dates.csv")
-    return pd.read_csv(path_to_file)
+    return df.to_csv(path_to_file, index=False)
 
 def get_final_dates(df):
     """
