@@ -14,6 +14,14 @@ nltk.download("stopwords")
 
 FONT_SIZE = 12
 TITLE_FONT_SIZE = 15
+COLORS = {
+    'joy': '#f3c35f',
+    'anger': '#e13c29',
+    'disgust': '#8bc664',
+    'sadness': '#85b8ed',
+    'fear': '#b99be5',
+    'surprise': '#de9b81fc'
+}
 
 
 def plot_movies_over_time_months(df_movies):
@@ -221,4 +229,130 @@ def show_top_10_words_per_emotion(
     # Finalize and save the plot
     plt.tight_layout()
     # plt.savefig(os.path.join(output_dir, 'top_words_per_emotion.png'))
+    plt.show()
+
+def plot_emotion_distribution_per_period(dataframe, period_column):
+
+    """
+    Generates a stacked bar chart of emotion distribution for each period : in our case we use it for months ans years.
+    For each period (month or year), we split a 1-unit bar into segments representing the proportion of each emotion 
+    within that period.
+
+    Parameters:
+    - dataframe (pd.DataFrame): DataFrame with normalized emotion scores (without neutral) and specified period column.
+    - period_column (str): Column name for grouping data ('release_year' or 'release_month').
+
+    Returns:
+    - Stacked bar chart showing the distribution of each emotion per period.
+    """
+    
+    emotion_labels = ["anger", "disgust", "fear", "joy", "sadness", "surprise"]
+    emotions = [f'normalized_plot_{emotion}_without_neutral' for emotion in emotion_labels]
+    
+    # calculate the proportion of each emotion for each period
+    period_emotion_totals = dataframe.groupby(period_column)[emotions].sum()
+    period_emotion_distribution = period_emotion_totals.div(period_emotion_totals.sum(axis=1), axis=0)
+    
+    # Create the plot
+    plt.figure(figsize=(14, 8))
+    bottom = None  
+
+    #One bar for each emotion
+    for i, emotion in enumerate(emotions):
+        emotion_label = emotion_labels[i]
+        emotion_color = COLORS[emotion_label]
+        if bottom is None:
+            bottom = period_emotion_distribution[emotion]
+            plt.bar(period_emotion_distribution.index, period_emotion_distribution[emotion], 
+                    label=emotion_label, color=emotion_color)
+        else:
+            plt.bar(period_emotion_distribution.index, period_emotion_distribution[emotion], bottom=bottom, 
+                    label=emotion_label, color=emotion_color)
+            bottom += period_emotion_distribution[emotion]
+
+    plt.title(f"Distribution of emotions per {period_column.replace('release_', '')}")
+    plt.xlabel(period_column.replace('release_', '').capitalize())
+    plt.ylabel("Proportion")
+    plt.legend(title="Emotion", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+def plot_emotion_deviation_per_period(dataframe, reference_period='release_month'):
+
+    """
+    Plots the deviation of emotions from their overall mean across the specified period to observe fluctuations or trends 
+    in emotion intensities over time. This visualization helps to identify periods where certain emotions are notably higher 
+    or lower than their overall average, providing insights into potential seasonal variations in emotional content.
+    
+    Parameters:
+    - dataframe (pd.DataFrame): DataFrame containing normalized emotion scores (without neutral) and the specified period column.
+    - reference_period (str): The column name representing the period to group by ('release_month' or 'release_year').
+    
+    Returns:
+    - Line plot showing the deviation of each emotion from its overall mean over the specified period.
+    """
+
+    emotion_labels = ["anger", "disgust", "fear", "joy", "sadness", "surprise"]
+    emotions = [f'normalized_plot_{emotion}_without_neutral' for emotion in emotion_labels]
+    
+    overall_mean = dataframe[emotions].mean()
+    period_data = dataframe.groupby(reference_period)[emotions].mean()
+
+    deviation_from_mean = period_data - overall_mean
+
+    #Plotting deviations
+    plt.figure(figsize=(12, 6))
+    for i, emotion in enumerate(emotions):
+        emotion_label = emotion_labels[i]
+        emotion_color = COLORS[emotion_label]
+        plt.plot(deviation_from_mean.index, deviation_from_mean[emotion], label=emotion_label, color=emotion_color)
+        
+    plt.title("Index of deviation of emotions from the mean")
+    plt.xlabel(reference_period.replace('release_', '').capitalize())
+    plt.ylabel("Deviation from the mean")
+    plt.legend(title="Emotion", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+def plot_major_emotion_per_five_years(dataframe, year_column='release_year'):
+
+    """
+    This function groups data by five year intervals and finds the dominant emotion 
+    (the one with the highest average score) in each period. It then visualizes the 
+    percentage of the dominant emotion per period.
+
+    Parameters:
+    - dataframe (pd.DataFrame): DataFrame containing normalized emotion scores (without neutral) and a release year column.
+    - year_column (str): Column name for the release year (default is 'release_year').
+
+    Returns:
+    - Bar plot with the dominant emotion and its average percentage per period.
+    """
+
+    emotion_labels = ["anger", "disgust", "fear", "joy", "sadness", "surprise"]
+    emotions = [f'normalized_plot_{emotion}_without_neutral' for emotion in emotion_labels]
+    
+    #Group the data by five year intervals, using the beginning year of each period
+    dataframe['period'] = (dataframe[year_column] // 5) * 5
+    
+    #Calculate the mean emotion scores for each period
+    period_means = dataframe.groupby('period')[emotions].mean()
+    
+    #Find the dominant emotion and its percentage for each period
+    dominant_emotion = period_means.idxmax(axis=1).str.replace('normalized_plot_', '')
+    dominant_emotion = dominant_emotion.str.replace('_without_neutral', '')
+    dominant_percentage = period_means.max(axis=1)
+    
+    #Add dominant emotion and percentage as new columns to period_means
+    period_means['Dominant Emotion'] = dominant_emotion
+    period_means['Percentage'] = dominant_percentage
+
+    #Plotting
+    plt.figure(figsize=(14, 6))
+    sns.barplot(x=period_means.index, y='Percentage', hue='Dominant Emotion', data=period_means, palette=COLORS)
+    plt.title("Dominant emotion for each quinquennium")
+    plt.xlabel("Five year period")
+    plt.ylabel("Proportion")
+    plt.legend(title="Emotion", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
     plt.show()
