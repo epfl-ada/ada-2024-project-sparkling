@@ -58,18 +58,10 @@ def plot_movies_over_time_years(df_movies):
 
     sorted_bins_years = df_movies["release_year"].value_counts().sort_index()
     fig, ax = plt.subplots(figsize=(11, 7))
-    sns.barplot(x=sorted_bins_years.index, y=sorted_bins_years.values, ax=ax)
-
-    # Force the first and last label to appear
-    first_date = sorted_bins_years.index[0]
-    last_date = sorted_bins_years.index[-1]
-    STEP_YEARS = 10
-
-    list_labels_years = [
-        str(x) for x in list(range(first_date, last_date + 1, STEP_YEARS))
-    ]
-    ax.set_xticks(list_labels_years, labels=list_labels_years)
-
+    sns.barplot(x=sorted_bins_years.index.astype(str), y=sorted_bins_years.values, ax=ax)
+    
+    ax.set_xticks(ax.get_xticks()[::10])
+    
     ax.set_title("Movie release over time (year precision)", fontsize=TITLE_FONT_SIZE)
     ax.set_xlabel("Time")
     ax.set_ylabel("Number of movies")
