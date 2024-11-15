@@ -100,7 +100,7 @@ def plot_pie_genres_proportion(df_genres):
 
     genres_counts = genres.sum().sort_values(ascending=False)
 
-    # To rotate the genres and percetange:
+    # To rotate the genres and percentages:
     # https://stackoverflow.com/questions/64411633/how-to-rotate-the-percentage-label-in-a-pie-chart-to-match-the-category-label-ro
     patches, labels, pct_texts = plt.pie(
         genres_counts.values,
