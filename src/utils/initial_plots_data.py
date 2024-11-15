@@ -217,7 +217,6 @@ def show_top_10_words_per_emotion(
             axes[idx // 3, idx % 3].set_title(
                 f"Top 10 Words for {emotion.split('_')[2].capitalize()}"
             )
-            axes[idx // 3, idx % 3].set_xticklabels(words, rotation=45)
 
     # Finalize and save the plot
     plt.tight_layout()
