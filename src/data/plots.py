@@ -90,8 +90,7 @@ def plot_top_country_emotion_correlation(df_emotions, df_country):
         top_countries = pd.concat([top_positive, top_negative])
         
         plt.figure(figsize=(12, 8))
-        sns.barplot(x=top_countries.index, y=top_countries.values, palette="coolwarm", legend=False, hue=top_countries.index, 
-                    cmap="coolwarm_r")
+        sns.barplot(x=top_countries.index, y=top_countries.values, palette="coolwarm_r", legend=False, hue=top_countries.index)
         plt.title(f"Top 10 positive and negative country correlations with {emotion.replace('normalized_plot_', '')}")
         plt.xlabel("Country")
         plt.ylabel("Correlation")
