@@ -150,7 +150,7 @@ def calculate_review_emotion_scores(text):
 def predict_emotions_to_tsv(df, column, file_name, id_column='wikipedia_ID', is_review=False):
     '''
     Predicts emotions for each entry in the specified column of the DataFrame and saves results to a TSV file.
-    Handles cases where multiple rows may share the same ID by using row indexes.
+    Resumes from the last processed row.
 
     Args:
         df (pd.DataFrame): DataFrame containing text data for prediction.
@@ -163,20 +163,19 @@ def predict_emotions_to_tsv(df, column, file_name, id_column='wikipedia_ID', is_
         None
     '''
     
-    existing_data = read_tsv(file_name)  # Check if TSV file exists to resume from last processed row
+    # Read existing TSV to find how many rows are processed
+    existing_data = read_tsv(file_name)  # Check if TSV file exists
 
     if existing_data is None:
         # Initialize TSV with column names if file doesn't exist
         write_tsv(pd.DataFrame(columns=[id_column, 'emotion_predictions']), file_name, header=True)
+        start_idx = 0  # Start from the beginning if no existing data
     else:
-        last_wikipedia_id = existing_data[id_column].iloc[-1]  # Get the last ID from the file
-        existing_data = existing_data[existing_data[id_column] != last_wikipedia_id]  # Remove rows with the last ID
-        write_tsv(existing_data, file_name, mode='w', header=True)  # Rewrite the TSV without the last ID
+        # Determine the start index based on the number of rows in the existing file
+        start_idx = len(existing_data)  # Resume from the last processed row
 
-    for idx, row in tqdm(df.iterrows(), total=len(df), desc="Processing and saving"):
-        if existing_data is not None and row[id_column] in existing_data[id_column].values:
-            continue  # Skip rows with IDs already in the TSV file
-        
+    # Loop through the DataFrame starting from the last unprocessed row
+    for idx, row in tqdm(df.iloc[start_idx:].iterrows(), total=len(df) - start_idx, desc="Processing and saving"):
         # Predict emotions for the current row's text column
         if is_review:
             emotion_prediction = calculate_review_emotion_scores(row[column])
@@ -190,7 +189,6 @@ def predict_emotions_to_tsv(df, column, file_name, id_column='wikipedia_ID', is_
         
         # Save the current row to the TSV file immediately
         write_tsv(pd.DataFrame([row_to_write]), file_name, mode='a', header=False)
-
 
 
 
