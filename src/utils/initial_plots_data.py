@@ -21,7 +21,7 @@ COLORS = {
     'disgust': '#8bc664',
     'sadness': '#85b8ed',
     'fear': '#b99be5',
-    'surprise': '#de9b81fc'
+    'surprise': '#de9f81'
 }
 
 
