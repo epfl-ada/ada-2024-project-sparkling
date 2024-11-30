@@ -23,6 +23,14 @@ COLORS = {
     'fear': '#b99be5',
     'surprise': '#de9f81'
 }
+EMOJIS = {
+    'joy': '😂',
+    'anger': '😡',
+    'disgust': '🤢',
+    'sadness': '😭',
+    'fear': '😨',
+    'surprise': '😯'
+}
 
 
 def plot_movies_over_time_months(df_movies):

@@ -7,12 +7,12 @@ import plotly.express as px
 MIN_MOVIE_ACTOR = 3
 MIN_REVIEWS_ACTOR = 10
 
-def plot_3D_actor_plot_emotion(df_characters, df_movies_with_emotions):
+def get_mean_plot_actor_emotion(df_characters, df_movies_with_emotions):
     """
     Given the dataframe containing the actors name along with the movie they played in and 
     the emotions of the plot of the movies.
-    Plot a 3D scatter of the actors according to their most present emotion in the movie plot they played in.
-    Displays the 3D scatter plot by using PCA on the emotions means.
+    Returns for each actors the mean emotions of the movie's plot they played in and the movies plot 
+    normalized emotion without neutral merged with the actors dataframe
     """
     df_movies_with_emotions = normalize_total_plot_emotions(df_movies_with_emotions)[["wikipedia_ID", 
                                                                                     "normalized_plot_anger_without_neutral", 
@@ -33,22 +33,14 @@ def plot_3D_actor_plot_emotion(df_characters, df_movies_with_emotions):
                                                     mean_sadness=("normalized_plot_sadness_without_neutral", "mean"),
                                                     mean_surprise=("normalized_plot_surprise_without_neutral", "mean"))
     
-    colors_label = df_actor_mean_emotions.idxmax(axis=1).str.replace("mean_","")
+    return df_actor_mean_emotions, df_actor_emotions
 
-    pca = PCA(n_components=3)
-    pd_pca_actor_means_emotion = pd.DataFrame(pca.fit_transform(df_actor_mean_emotions), index=df_actor_mean_emotions.index).reset_index()
-
-    # Merge data we want to display
-    df_data = pd_pca_actor_means_emotion.merge(df_actor_emotions[["freebase_ID_actor", "actor_name"]], on="freebase_ID_actor", how="left").drop_duplicates(["freebase_ID_actor", "actor_name"])
-
-    plot_3D_actor_emotion(df_data, colors_label, title="Most present emotion in actor's movie")
-
-def plot_3D_actor_review_emotion(df_characters, df_reviews_with_emotions):
+def get_mean_review_actor_emotion(df_characters, df_reviews_with_emotions):
     """
     Given the dataframe containing the actors name along with the movie they played in and 
     the emotions of the reviews of the movies.
-    Plot a 3D scatter of the actors according to their most present emotion in the reviews on the movies they played in.
-    Displays the 3D scatter plot by using PCA on the emotions means.
+    Returns for each actors the mean emotions of the movie's reviews they played in and the movies reviews 
+    normalized emotion without neutral merged with the actors dataframe
     """
     df_reviews_with_emotions_normalized = normalize_review_emotions(df_reviews_with_emotions, with_neutral=False)[["wikipedia_ID", 
                                                                                         "normalized_review_anger_without_neutral", 
@@ -68,6 +60,36 @@ def plot_3D_actor_review_emotion(df_characters, df_reviews_with_emotions):
                                                     mean_joy=("normalized_review_joy_without_neutral", "mean"),
                                                     mean_sadness=("normalized_review_sadness_without_neutral", "mean"),
                                                     mean_surprise=("normalized_review_surprise_without_neutral", "mean"))
+    
+    return df_actor_mean_emotions, df_actor_emotions
+
+def plot_3D_actor_plot_emotion(df_characters, df_movies_with_emotions):
+    """
+    Given the dataframe containing the actors name along with the movie they played in and 
+    the emotions of the plot of the movies.
+    Plot a 3D scatter of the actors according to their most present emotion in the movie plot they played in.
+    Displays the 3D scatter plot by using PCA on the emotions means.
+    """
+    df_actor_mean_emotions, df_actor_emotions = get_mean_plot_actor_emotion(df_characters, df_movies_with_emotions)
+
+    colors_label = df_actor_mean_emotions.idxmax(axis=1).str.replace("mean_","")
+
+    pca = PCA(n_components=3)
+    pd_pca_actor_means_emotion = pd.DataFrame(pca.fit_transform(df_actor_mean_emotions), index=df_actor_mean_emotions.index).reset_index()
+
+    # Merge data we want to display
+    df_data = pd_pca_actor_means_emotion.merge(df_actor_emotions[["freebase_ID_actor", "actor_name"]], on="freebase_ID_actor", how="left").drop_duplicates(["freebase_ID_actor", "actor_name"])
+
+    plot_3D_actor_emotion(df_data, colors_label, title="Most present emotion in actor's movie")
+
+def plot_3D_actor_review_emotion(df_characters, df_reviews_with_emotions):
+    """
+    Given the dataframe containing the actors name along with the movie they played in and 
+    the emotions of the reviews of the movies.
+    Plot a 3D scatter of the actors according to their most present emotion in the reviews on the movies they played in.
+    Displays the 3D scatter plot by using PCA on the emotions means.
+    """
+    df_actor_mean_emotions, df_actor_emotions = get_mean_review_actor_emotion(df_characters, df_reviews_with_emotions)
     
     colors_label = df_actor_mean_emotions.idxmax(axis=1).str.replace("mean_","")
 
