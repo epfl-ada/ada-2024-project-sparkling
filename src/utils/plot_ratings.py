@@ -90,6 +90,8 @@ def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_
         xaxis_title="Average Movie Rating Bin",  # Label for the x-axis
         yaxis_title="Emotion Score (%)",  # Label for the y-axis
         legend_title="Emotion",  # Legend title
+        title_x=0.5,
+        title_xanchor="center",
         template="plotly_white",  # Use a clean white background style
     )
 

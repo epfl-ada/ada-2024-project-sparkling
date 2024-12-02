@@ -95,6 +95,8 @@ def plot_emotion_distribution(df_with_emotions_normalized, df_main_genres, is_re
         xaxis_title="Genre",
         yaxis_title="Emotion Score (%)",
         legend_title="Emotion",
+        title_x=0.5,
+        title_xanchor="center",
         xaxis=dict(type='category', categoryorder='total descending'),  # Order genres by total emotion scores
         template="plotly_white"  # Use a clean background style
     )
