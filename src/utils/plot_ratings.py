@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import os
 
-from src.data.plot_genres import EMOTIONS, GENRES, COLORS, PLOTS_PATH
+from src.utils.plot_genres import EMOTIONS, GENRES, COLORS, PLOTS_PATH
 
 
 
