@@ -1,0 +1,76 @@
+<style>
+    /* Conteneur des photos */
+    .photo-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 10px;
+        width: 80%;
+        margin: 160px auto 0px auto;
+        justify-items: center; /* Aligne les items au centre */
+    }
+
+    /* Style des éléments photo */
+    .photo-item {
+        text-align: center;
+        position: relative; /* Permet le positionnement relatif des éléments internes */
+    }
+
+    /* Photos principales */
+    .primary-photo {
+        width: 100px; /* Taille fixe pour les photos rondes */
+        height: 100px; /* Assurez-vous que les photos rondes sont carrées */
+        border-radius: 50%;
+        border: 3px solid;
+        object-fit: cover; /* S'assure que l'image couvre le cercle */
+    }
+
+    /* Photos secondaires */
+    .secondary-photo {
+        width: 75px; /* Taille des photos secondaires */
+        height: auto;
+        position: absolute;
+        bottom: 100%; /* Place le bas de la photo secondaire au niveau du haut de la photo principale */
+        left: 50%;
+        transform: translateX(-50%); /* Centre l'image secondaire par rapport à l'image principale */
+    }
+
+    /* Texte sous les images */
+    .photo-item p {
+        margin: 5px 0 0;
+    }
+</style>
+
+<div class="photo-container" id="photoContainer"></div>
+
+<script>
+    const persons = [
+        { name: "Maria Brbić", img: "images/Maria-Brbic-rond.png", secondaryImg: "images/surprise.png", color: "surprise" },
+        { name: "Sofia Tahouid", img: "images/Sofia-Tahouid-rond.png", secondaryImg: "images/joy.png", color: "joy" },
+        { name: "Matthias Wyss", img: "images/Matthias-Wyss-rond.png", secondaryImg: "images/anger.png", color: "anger" },
+        { name: "Lina Sadgal", img: "images/Lina-Sadgal-rond.png", secondaryImg: "images/disgust.png", color: "disgust" },
+        { name: "Yasmine Tilgui", img: "images/Yasmine-Tilgui-rond.png", secondaryImg: "images/sadness.png", color: "sadness" },
+        { name: "Guillaume Vitalis", img: "images/Guillaume-Vitalis-rond.png", secondaryImg: "images/fear.png", color: "fear" },
+    ];
+
+    const colorMap = {
+        joy: "#f3c35f",
+        anger: "#e13c29",
+        disgust: "#8bc664",
+        sadness: "#85b8ed",
+        fear: "#b99be5",
+        surprise: "#de9f81"
+    };
+
+    const photoContainer = document.getElementById('photoContainer');
+    persons.forEach(person => {
+        const photoItem = document.createElement('div');
+        photoItem.classList.add('photo-item');
+        photoItem.innerHTML = `
+            <img src="${person.secondaryImg}" alt="Photo secondaire de ${person.name}" class="secondary-photo">
+            <img src="${person.img}" alt="${person.name}" class="primary-photo" style="border-color: ${colorMap[person.color]}">
+            <p>${person.name}</p>
+            <p>${person.color.charAt(0).toUpperCase() + person.color.slice(1)}</p>
+        `;
+        photoContainer.appendChild(photoItem);
+    });
+</script>
