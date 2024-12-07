@@ -12,6 +12,11 @@ def get_mean_plot_actor_emotion(df_characters, df_movies_with_emotions):
     """
     Given the dataframe containing the actors name along with the movie they played in and 
     the emotions of the plot of the movies.
+
+    Arguments:
+        - df_characters: Dataframe containing the actors and character information associated with the movie they played in
+        - df_movies_with_emotions: Dataframe containing for each movies the associated emotions of its plot
+
     Returns for each actors the mean emotions of the movie's plot they played in and the movies plot 
     normalized emotion without neutral merged with the actors dataframe
     """
@@ -40,6 +45,11 @@ def get_mean_review_actor_emotion(df_characters, df_reviews_with_emotions):
     """
     Given the dataframe containing the actors name along with the movie they played in and 
     the emotions of the reviews of the movies.
+    
+    Arguments:
+        - df_characters: Dataframe containing the actors and character information associated with the movie they played in
+        - df_reviews_with_emotions: Dataframe containing the emotions associated to each reviews of a movies
+
     Returns for each actors the mean emotions of the movie's reviews they played in and the movies reviews 
     normalized emotion without neutral merged with the actors dataframe
     """
@@ -68,6 +78,11 @@ def plot_3D_actor_plot_emotion(df_characters, df_movies_with_emotions):
     """
     Given the dataframe containing the actors name along with the movie they played in and 
     the emotions of the plot of the movies.
+
+    Arguments:
+        - df_characters: Dataframe containing the actors and character information associated with the movie they played in
+        - df_movies_with_emotions: Dataframe containing for each movies the associated emotions of its plot
+
     Plot a 3D scatter of the actors according to their most present emotion in the movie plot they played in.
     Displays the 3D scatter plot by using PCA on the emotions means.
     """
@@ -87,6 +102,11 @@ def plot_3D_actor_review_emotion(df_characters, df_reviews_with_emotions):
     """
     Given the dataframe containing the actors name along with the movie they played in and 
     the emotions of the reviews of the movies.
+    
+    Arguments:
+        - df_characters: Dataframe containing the actors and character information associated with the movie they played in
+        - df_reviews_with_emotions: Dataframe containing the emotions associated to each reviews of a movies
+        
     Plot a 3D scatter of the actors according to their most present emotion in the reviews on the movies they played in.
     Displays the 3D scatter plot by using PCA on the emotions means.
     """

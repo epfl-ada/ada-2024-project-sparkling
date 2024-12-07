@@ -13,6 +13,16 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
     Given the the actors and their associated movies, along the movies plot and reviews emotions.
     Plot two bar plot displaying the mean percentage emotions for the top TOP_ACTORS_MOVIES_COUNT
     actors that played in the most movies in our dataset (can be selected through a dropdown menu)
+
+    Arguments:
+        - df_characters: Dataframe containing the actors and character information associated with the movie they played in
+        - df_movies_with_emotions: Dataframe containing for each movies the associated emotions of its plot
+        - df_reviews_with_emotions: Dataframe containing the emotions associated to each reviews of a movies
+
+    Returns two dataframes containing for each emotion the actor that has the maximum mean emotion from the top 
+        TOP_ACTORS_MOVIES_COUNT actors that played in the most movies in our dataset.
+        - df_emotion_max_actor_plots: Dataframe containing the emotions for the plots
+        - df_emotion_max_actor_reviews: Dataframe containing the emotions for the reviews.
     """
     df_actor_mean_emotions_plot, df_actor_emotions_plot = get_mean_plot_actor_emotion(df_characters, df_movies_with_emotions)
     df_actor_mean_emotions_reviews, df_actor_emotions_reviews = get_mean_review_actor_emotion(df_characters, df_reviews_with_emotions)
@@ -87,7 +97,7 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
     )
 
     # Title
-    fig.update_layout(title="Actor mean movie's plot and reviews by actor", title_x=0.5, title_y=0.95)
+    fig.update_layout(title="Actor mean movie's plot and reviews emotion", title_x=0.5, title_y=0.95)
 
     # Legend
     fig.update_layout(legend_visible=False)
@@ -104,8 +114,16 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
     ticks = [10, 20, 30, 40, 50]
     fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks])
 
-
     fig.show()
 
     # Save plot
     save_plot(fig, figure_name="actor_selector_emotions_profile")
+
+    # Output for each emotion the actor that maximize it for both the reviews and the plots
+    df_emotion_max_actor_plots = df_actors_to_display.merge(df_actor_mean_emotions_plot, left_index=True, right_index=True)
+    df_emotion_max_actor_plots = df_emotion_max_actor_plots.drop("actor_name", axis=1).idxmax().apply(lambda actor_id: df_id_actor_name.loc[actor_id]["actor_name"])
+
+    df_emotion_max_actor_reviews = df_actors_to_display.merge(df_actor_mean_emotions_reviews, left_index=True, right_index=True)
+    df_emotion_max_actor_reviews = df_emotion_max_actor_reviews.drop("actor_name", axis=1).idxmax().apply(lambda actor_id: df_id_actor_name.loc[actor_id]["actor_name"])
+
+    return df_emotion_max_actor_plots, df_emotion_max_actor_reviews
