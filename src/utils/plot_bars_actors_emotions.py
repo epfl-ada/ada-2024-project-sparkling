@@ -89,7 +89,7 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
             ),
         ]
     )
-    range_y_axis = [0,max_pct*1.05]
+    range_y_axis = [0,max_pct*1.10]
     fig.update_yaxes(range=range_y_axis, title="Mean emotion percentage", row=1, col=1, gridcolor='lightgrey')
     fig.update_yaxes(range=range_y_axis, row=1, col=2, gridcolor='lightgrey')
     fig.update_layout(
@@ -121,9 +121,13 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
 
     # Output for each emotion the actor that maximize it for both the reviews and the plots
     df_emotion_max_actor_plots = df_actors_to_display.merge(df_actor_mean_emotions_plot, left_index=True, right_index=True)
-    df_emotion_max_actor_plots = df_emotion_max_actor_plots.drop("actor_name", axis=1).idxmax().apply(lambda actor_id: df_id_actor_name.loc[actor_id]["actor_name"])
+    df_emotion_max_actor_plots = df_emotion_max_actor_plots.set_index("actor_name")
+    df_emotion_max_actor_plots_max = pd.concat([df_emotion_max_actor_plots.idxmax(), df_emotion_max_actor_plots.max()], axis=1)
+    df_emotion_max_actor_plots_max.columns = ["emotion", "emotion_value"]
 
     df_emotion_max_actor_reviews = df_actors_to_display.merge(df_actor_mean_emotions_reviews, left_index=True, right_index=True)
-    df_emotion_max_actor_reviews = df_emotion_max_actor_reviews.drop("actor_name", axis=1).idxmax().apply(lambda actor_id: df_id_actor_name.loc[actor_id]["actor_name"])
+    df_emotion_max_actor_reviews = df_emotion_max_actor_reviews.set_index("actor_name")
+    df_emotion_max_actor_reviews_max = pd.concat([df_emotion_max_actor_reviews.idxmax(), df_emotion_max_actor_reviews.max()], axis=1)
+    df_emotion_max_actor_reviews_max.columns = ["emotion", "emotion_value"]
 
-    return df_emotion_max_actor_plots, df_emotion_max_actor_reviews
+    return df_emotion_max_actor_plots_max, df_emotion_max_actor_reviews_max
