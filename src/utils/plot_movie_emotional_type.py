@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 from plotly.subplots import make_subplots
 from src.data.merge_genres import get_genres_merged
 from src.utils.initial_plots_data import COLORS
+from src.utils.save_plot import save_plot
 
 def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_review=False, k=2, clusters_color = {0: "palevioletred", 1: "steelblue"}, clusters_name = {0: "Cluster 0", 1: "Cluster 1"}, clusters_col_subplot = {0:1, 1:2}):
     """
@@ -82,11 +83,19 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
         fig.update_traces(marker_color=color_discrete_sequence, row=row, col=col)
 
         ticks = [10, 20, 30, 40, 50, 60, 70, 80]
-        fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks])
+        fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks], gridcolor='lightgray')
 
-        fig.update_yaxes(range=[0,80])
+        fig.update_yaxes(range=[0,80], gridcolor='lightgray')
+        
+    fig.update_layout(
+        plot_bgcolor='white'
+    )
 
     fig.show()
+
+    # Save plot
+    save_plot(fig, figure_name="percentage_movie_genre_" + ("review" if is_review else "plot"))
+
     centroids = bestKmeans.cluster_centers_
     centroids = pd.DataFrame(centroids, index=genre_mean_per_cluster.index, columns=emotions)
     return genre_mean_per_cluster, centroids
@@ -124,9 +133,15 @@ def plot_emotions_centroids(df_centroids, clusters_name = {0: "Cluster 0", 1: "C
     fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks])
 
     y_range = [0,max_y_range]
-    fig.update_yaxes(range=y_range, title="Mean percentage", row=1, col=1)
-    fig.update_yaxes(range=y_range, row=1, col=2)
+    fig.update_yaxes(range=y_range, title="Mean percentage", row=1, col=1, gridcolor='lightgray')
+    fig.update_yaxes(range=y_range, row=1, col=2, gridcolor='lightgray')
     fig.update_xaxes(title_text="Genre")
 
+    fig.update_layout(
+        plot_bgcolor='white'
+    )
 
     fig.show()
+
+    # Save plot
+    save_plot(fig, figure_name="cluster_centroids_emotions_" + ("review" if is_reviews else "plot"))

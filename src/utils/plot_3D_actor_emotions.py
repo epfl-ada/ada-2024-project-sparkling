@@ -3,6 +3,7 @@ from src.data.normalize_emotions import normalize_total_plot_emotions, normalize
 from sklearn.decomposition import PCA
 import pandas as pd
 import plotly.express as px
+from src.utils.save_plot import save_plot
 
 MIN_MOVIE_ACTOR = 3
 MIN_REVIEWS_ACTOR = 10
@@ -80,7 +81,7 @@ def plot_3D_actor_plot_emotion(df_characters, df_movies_with_emotions):
     # Merge data we want to display
     df_data = pd_pca_actor_means_emotion.merge(df_actor_emotions[["freebase_ID_actor", "actor_name"]], on="freebase_ID_actor", how="left").drop_duplicates(["freebase_ID_actor", "actor_name"])
 
-    plot_3D_actor_emotion(df_data, colors_label, title="Most present emotion in actor's movie")
+    plot_3D_actor_emotion(df_data, colors_label, title="Most present emotion in actor's movie", save_fig_name="3d_emotion_actor_movie_plot")
 
 def plot_3D_actor_review_emotion(df_characters, df_reviews_with_emotions):
     """
@@ -99,9 +100,9 @@ def plot_3D_actor_review_emotion(df_characters, df_reviews_with_emotions):
     # Merge data we want to display
     df_data = pd_pca_actor_means_emotion.merge(df_actor_emotions[["freebase_ID_actor", "actor_name"]], on="freebase_ID_actor", how="left").drop_duplicates(["freebase_ID_actor", "actor_name"])
 
-    plot_3D_actor_emotion(df_data, colors_label, title="Most present emotion in actor's movie review")
+    plot_3D_actor_emotion(df_data, colors_label, title="Most present emotion in actor's movie review", save_fig_name="3d_emotion_actor_movie_review")
 
-def plot_3D_actor_emotion(df_data, colors_label, title):
+def plot_3D_actor_emotion(df_data, colors_label, title, save_fig_name):
     """
     Given some 3D coordinates along with the name of the actor (df_data) and the colors of the point.
     Display a 3D scatter with the given title and display as 'hover' action over the points the name of the actor associated to the point.
@@ -131,3 +132,6 @@ def plot_3D_actor_emotion(df_data, colors_label, title):
     # Modify title
     fig.update_layout(title_text=title, title_x=0.5, title_font_size=25)
     fig.show()
+
+    # Save plot
+    save_plot(fig, save_fig_name)

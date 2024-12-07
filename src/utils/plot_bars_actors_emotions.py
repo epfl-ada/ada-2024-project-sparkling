@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 
 from src.utils.plot_3D_actor_emotions import *
 from src.utils.initial_plots_data import COLORS, EMOJIS
+from src.utils.save_plot import save_plot
 
 TOP_ACTORS_MOVIES_COUNT = 100
 
@@ -79,8 +80,11 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
         ]
     )
     range_y_axis = [0,max_pct*1.05]
-    fig.update_yaxes(range=range_y_axis, title="Mean emotion percentage", row=1, col=1)
-    fig.update_yaxes(range=range_y_axis, row=1, col=2)
+    fig.update_yaxes(range=range_y_axis, title="Mean emotion percentage", row=1, col=1, gridcolor='lightgrey')
+    fig.update_yaxes(range=range_y_axis, row=1, col=2, gridcolor='lightgrey')
+    fig.update_layout(
+        plot_bgcolor='white'
+    )
 
     # Title
     fig.update_layout(title="Actor mean movie's plot and reviews by actor", title_x=0.5, title_y=0.95)
@@ -102,3 +106,6 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
 
 
     fig.show()
+
+    # Save plot
+    save_plot(fig, figure_name="actor_selector_emotions_profile")
