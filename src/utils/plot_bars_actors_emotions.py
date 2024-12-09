@@ -38,7 +38,7 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
     # Limit the number of actors to the top TOP_ACTORS_MOVIES_COUNT actors that played in the most movies
     actors_ID = pd.Series(list(set(df_actor_mean_emotions_reviews.index).intersection(set(df_actor_mean_emotions_plot.index))))
 
-    count_actor_movies = df_actor_emotions_plot.groupby("freebase_ID_actor")["wikipedia_ID"].count()
+    count_actor_movies = df_actor_emotions_plot.groupby("freebase_ID_actor")["wikipedia_ID"].nunique()
     count_actor_movies = count_actor_movies[actors_ID]
 
     top_actors = count_actor_movies.sort_values(ascending=False)[:TOP_ACTORS_MOVIES_COUNT]
@@ -121,13 +121,13 @@ def plot_actors_emotion_selector(df_characters, df_movies_with_emotions, df_revi
 
     # Output for each emotion the actor that maximize it for both the reviews and the plots
     df_emotion_max_actor_plots = df_actors_to_display.merge(df_actor_mean_emotions_plot, left_index=True, right_index=True)
-    df_emotion_max_actor_plots = df_emotion_max_actor_plots.set_index("actor_name")
+    df_emotion_max_actor_plots = df_emotion_max_actor_plots.drop("actor_name", axis=1)
     df_emotion_max_actor_plots_max = pd.concat([df_emotion_max_actor_plots.idxmax(), df_emotion_max_actor_plots.max()], axis=1)
-    df_emotion_max_actor_plots_max.columns = ["emotion", "emotion_value"]
+    df_emotion_max_actor_plots_max.columns = ["actor_id", "emotion_value"]
 
     df_emotion_max_actor_reviews = df_actors_to_display.merge(df_actor_mean_emotions_reviews, left_index=True, right_index=True)
-    df_emotion_max_actor_reviews = df_emotion_max_actor_reviews.set_index("actor_name")
+    df_emotion_max_actor_reviews = df_emotion_max_actor_reviews.drop("actor_name", axis=1)
     df_emotion_max_actor_reviews_max = pd.concat([df_emotion_max_actor_reviews.idxmax(), df_emotion_max_actor_reviews.max()], axis=1)
-    df_emotion_max_actor_reviews_max.columns = ["emotion", "emotion_value"]
+    df_emotion_max_actor_reviews_max.columns = ["actor_id", "emotion_value"]
 
     return df_emotion_max_actor_plots_max, df_emotion_max_actor_reviews_max
