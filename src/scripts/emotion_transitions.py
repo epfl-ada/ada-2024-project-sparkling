@@ -46,6 +46,17 @@ idx_to_emotion = {v: k for k, v in map_idx_emotion.items()}
 idx_to_situation = {v: k for k, v in map_idx_situation.items()}
 
 def separate_by_column(row):
+    """
+    This function processes a JSON-formatted string (row), parses it into a Python dictionary,
+    and extracts specific fields related to emotion analysis, organizing them into a new dictionary.
+
+    Args:
+        row (str): A JSON-formatted string containing data about sentences and their associated emotions.
+
+    Returns:
+        dict: A dictionary with keys for sentences and  emotions ("anger", "disgust", "fear", 
+              "joy", "sadness", "surprise"). Each key maps to a list extracted from the JSON input.
+    """
     data = json.loads(row)
     return {
         "sentences": data.get("sentences", []),
@@ -58,6 +69,17 @@ def separate_by_column(row):
     }
 
 def split_plot_emotions(df, group_emotions=False):
+    """
+    Splits emotion scores into three parts (beginning, middle, end) for each row in the DataFrame.
+
+    Args:
+        df (DataFrame): DataFrame containing sentences and emotion scores.
+        group_emotions (bool): Whether to group emotions into situations ("Positive", "Negative", "Plot Twist").
+
+    Returns:
+        new_df (DataFrame): A new DataFrame with added columns for each emotion's split scores.
+    """
+    
     if group_emotions:
         emotions_list = situation_columns
     else:
@@ -80,12 +102,32 @@ def split_plot_emotions(df, group_emotions=False):
     return new_df
 
 def add_pos_neg_plot_twist(df):
+    """
+    Adds new columns for grouped emotions ("Positive", "Negative", "Plot Twist") by summing relevant emotion scores.
+
+    Args:
+        df (DataFrame): DataFrame with emotion scores.
+
+    Returns:
+        separated_emotions_df (DataFrame): Modified DataFrame with additional columns for grouped emotions.
+    """
     separated_emotions_df = df.copy()
     for key, value in map_situation_emotion.items():
         separated_emotions_df[str(key)] = separated_emotions_df[value].sum(axis=1)
     return separated_emotions_df
 
 def split_movies_emotions_and_genres(plot_emotions_df, df_genres, group_emotions=False): 
+    """
+    Splits emotions into parts (beginning, middle, end) and merges with genres data.
+
+    Args:
+        plot_emotions_df (DataFrame): DataFrame containing emotion predictions.
+        df_genres (DataFrame): DataFrame containing genre information.
+        group_emotions (bool): Whether to group emotions into situations.
+
+    Returns:
+        DataFrame: A merged and exploded DataFrame containing genres and split emotions.
+    """
     separated_emotions = plot_emotions_df['emotion_predictions'].apply(separate_by_column).apply(pd.Series)
     
     if group_emotions:
@@ -113,6 +155,19 @@ def split_movies_emotions_and_genres(plot_emotions_df, df_genres, group_emotions
     return df_genres_emotions.explode("genres")
 
 def get_transition_matrix(df, from_, to, group_emotions=False):
+    """
+    Creates a transition matrix that shows probabilities of moving from one emotion to another 
+    between two parts of a movie.
+
+    Args:
+        df (DataFrame): DataFrame containing split emotion data.
+        from_ (int): The source part (e.g., beginning or middle).
+        to (int): The target part (e.g., middle or end).
+        group_emotions (bool): Whether to group emotions into situations.
+
+    Returns:
+        DataFrame: A transition matrix where rows are source emotions and columns are target emotions.
+    """
     if group_emotions:
         emotions_list = situation_columns
         map_to_idx = map_idx_situation
@@ -145,6 +200,17 @@ def get_transition_matrix(df, from_, to, group_emotions=False):
 
 
 def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitions.html", group_emotions=False):
+    """
+    Creates a heatmap visualization of transition probabilities between emotions or situations
+    and saved it in an HTML file.
+
+    Args:
+        df (DataFrame): DataFrame containing emotion data.
+        by_genre (bool): Whether to create separate heatmaps for each genre.
+        file_name (str): Name of the HTML file to save the heatmap.
+        group_emotions (bool): Whether to group emotions into situations (Positive, Negative, Surprise).
+
+    """
     if group_emotions:
         map_to_idx = map_idx_situation
         map_to_emotion = idx_to_situation
@@ -164,13 +230,19 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
             df_genre = df.loc[df.genres == genre]
             transitions_df = get_transition_matrix(df_genre, 2, 3, group_emotions=group_emotions).add(get_transition_matrix(df_genre, 1, 2, group_emotions=group_emotions), fill_value=0).multiply(0.5)
             title = f"Most common transitions in {genre}"
-        figures.append((title, transitions_df, genre))
     
+        transitions_df = transitions_df.div(transitions_df.sum(axis=1), axis=0).fillna(0)
+    
+        # Add a text representation of probabilities
+        text = transitions_df.map(lambda x: f"{x:.2}")  # Format probabilities as percentages
+    
+        figures.append((title, transitions_df, text, genre))
+
     # Create dropdown menu
     fig = go.Figure()
 
     # Add traces for each genre
-    for idx, (title, transitions_df, genre) in enumerate(figures):
+    for idx, (title, transitions_df, text, genre) in enumerate(figures):
         fig.add_trace(
             go.Heatmap(
                 z=transitions_df.values,
@@ -179,6 +251,9 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
                 colorscale='Greens',
                 visible=idx == 0,  # Only show the first heatmap initially
                 colorbar=dict(title='Transition Probability') if idx == 0 else None,
+                text=text.values,  # Add the text to display probabilities
+                texttemplate="%{text}",  # Format to show the text directly on the heatmap
+                textfont=dict(size=10),
                 hovertemplate=(
                 "<b>From</b>: %{y}<br>" 
                 "<b>To</b>: %{x}<br>"   
@@ -203,7 +278,7 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
                             {"title": title},
                         ],
                     )
-                    for idx, (title, _, genre) in enumerate(figures)
+                    for idx, (title, _, _, genre) in enumerate(figures)
                 ],
                 direction="down",
                 showactive=True,
@@ -221,6 +296,13 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
 
 
 def plot_sankey_chart_transitions(emotions_split_df):
+    """
+    Creates a Sankey diagram to visualize transitions between emotions across movie parts
+    and save it in an HTML file.
+
+    Args:
+        emotions_split_df (DataFrame): DataFrame containing split emotion data.
+    """
     # List of states for each of the three parts of the sankey chart
     states = emotion_columns * 3
     
@@ -240,7 +322,7 @@ def plot_sankey_chart_transitions(emotions_split_df):
                     links.append({
                         "source": i + offset_source,
                         "target": j + offset_target,
-                        "value": value  # Use normalized value
+                        "value": value 
                     })
         return links
 
@@ -289,12 +371,18 @@ def plot_sankey_chart_transitions(emotions_split_df):
         font_size=12,
         margin=dict(l=20, r=20, t=30, b=50)
     )
-
     
     pio.write_html(fig, file="sankey_charts_transitions.html", auto_open=False)
 
 
 def plot_separated_sankey(emotions_split_df):
+    """
+    Creates a Sankey diagram to visualize transitions between emotions across movie parts
+    and save it in an HTML file. Separate 1->2 and 2->3.
+
+    Args:
+        emotions_split_df (DataFrame): DataFrame containing split emotion data.
+    """
     # Transition matrices
     matrix1_to_2 = np.array(get_transition_matrix(emotions_split_df, 1, 2))
     matrix2_to_3 = np.array(get_transition_matrix(emotions_split_df, 2, 3))
@@ -412,6 +500,14 @@ def plot_separated_sankey(emotions_split_df):
     pio.write_html(fig, file="sep_sankey_charts_transitions.html", auto_open=False)
 
 def plot_separated_sankey_with_dropdown(emotions_split_df):
+    """
+    Creates a Sankey diagram to visualize transitions between emotions across movie parts
+    and save it in an HTML file. Separate 1->2 and 2->3 and gives the choice of the genre 
+    in a dropdown menu.
+
+    Args:
+        emotions_split_df (DataFrame): DataFrame containing split emotion data.
+    """
     genres = emotions_split_df["genres"].unique()
     
     # Define states and colors
