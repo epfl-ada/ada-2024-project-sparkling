@@ -1,1 +1,1 @@
-Sitemap: https://epfl-ada.github.io/ada-2024-project-sparkling/sitemap.xml
+Sitemap: http://localhost:4000/ada-2024-project-sparkling/sitemap.xml
