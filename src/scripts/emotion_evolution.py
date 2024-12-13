@@ -360,11 +360,10 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     )
     
     fig.update_yaxes(
-        range=[-80, 80], 
+        range=[-100, 100], 
         title="Variation (%)",
         row=1,
         col=2,
-        showticklabels=False,
     )
     
     fig.update_yaxes(
