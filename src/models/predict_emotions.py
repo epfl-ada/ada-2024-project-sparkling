@@ -19,7 +19,7 @@ PREDICTED_EMOTIONS_DIR = os.path.join(DATASETS_DIR, 'PredictedEmotions')
 # Ensure the data directory exists
 os.makedirs(PREDICTED_EMOTIONS_DIR, exist_ok=True)
 
-def read_tsv(file_name):
+def read_tsv_predicted_emotions(file_name):
     '''
     Reads a TSV file from the src/data directory and returns a DataFrame, or None if the file doesn't exist.
     
@@ -164,7 +164,7 @@ def predict_emotions_to_tsv(df, column, file_name, id_column='wikipedia_ID', is_
     '''
     
     # Read existing TSV to find how many rows are processed
-    existing_data = read_tsv(file_name)  # Check if TSV file exists
+    existing_data = read_tsv_predicted_emotions(file_name)  # Check if TSV file exists
 
     if existing_data is None:
         # Initialize TSV with column names if file doesn't exist
@@ -207,7 +207,7 @@ def merge_df_with_emotions_tsv(df, file_name, prefix, is_review=False):
     Returns:
         pd.DataFrame: Merged DataFrame with original data and emotion scores.
     '''
-    df_emotions = read_tsv(file_name)
+    df_emotions = read_tsv_predicted_emotions(file_name)
     if df_emotions is None:
         raise FileNotFoundError(f"No TSV file found at '{file_name}' to merge.")
     

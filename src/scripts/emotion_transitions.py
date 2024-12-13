@@ -8,6 +8,7 @@ import plotly.io as pio
 import json
 
 from src.data.merge_genres import get_genres_merged
+from src.utils.save_plot import save_plot
 
 COLORS = {
     'joy': '#f3c35f',
@@ -199,7 +200,7 @@ def get_transition_matrix(df, from_, to, group_emotions=False):
     return pd.DataFrame(transition_matrix)
 
 
-def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitions.html", group_emotions=False):
+def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitions", group_emotions=False):
     """
     Creates a heatmap visualization of transition probabilities between emotions or situations
     and saved it in an HTML file.
@@ -288,11 +289,11 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
     
     # Save the plot as an HTML file
     if group_emotions:
-        pio.write_html(fig, file='grouped_'+file_name, auto_open=False)
-        print(f"Heatmap saved as grouped_{file_name}")
+        save_plot(fig, 'grouped_'+file_name)
     else:
-        pio.write_html(fig, file=file_name, auto_open=False)
-        print(f"Heatmap saved as {file_name}")
+        save_plot(fig, file_name)
+
+    fig.show()
 
 
 def plot_sankey_chart_transitions(emotions_split_df):
@@ -372,7 +373,8 @@ def plot_sankey_chart_transitions(emotions_split_df):
         margin=dict(l=20, r=20, t=30, b=50)
     )
     
-    pio.write_html(fig, file="sankey_charts_transitions.html", auto_open=False)
+    save_plot(fig, "sankey_charts_transitions")
+    fig.show()
 
 
 def plot_separated_sankey(emotions_split_df):
@@ -497,7 +499,8 @@ def plot_separated_sankey(emotions_split_df):
         margin=dict(l=20, r=20, t=80, b=50) 
     )
 
-    pio.write_html(fig, file="sep_sankey_charts_transitions.html", auto_open=False)
+    save_plot(fig, "sep_sankey_charts_transitions")
+    fig.show()
 
 def plot_separated_sankey_with_dropdown(emotions_split_df):
     """
@@ -672,4 +675,5 @@ def plot_separated_sankey_with_dropdown(emotions_split_df):
         margin=dict(l=20, r=20, t=80, b=50) 
     )
 
-    pio.write_html(fig, file="sankey_charts_transitions.html", auto_open=False)
+    save_plot(fig, "sankey_charts_transitions")
+    fig.show()

@@ -3,11 +3,11 @@ import numpy as np
 import json
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.io as pio
 
 
 from src.data.load_final_data import load_final_movies_and_reviews
 from src.data.merge_genres import get_genres_merged
+from src.utils.save_plot import save_plot
 
 emotion_colors = {
     "joy": "#f3c35f",
@@ -197,7 +197,8 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         genre (str): The genre to filter and plot. Ignored if `all_genres` is True.
         all_genres (bool): If True, includes all genres in the plot; otherwise, filters for the specified genre.
     """
-    file_name = f"{genre}_bar_scatter_plot.html"
+    genre_filename_name = genre if genre is not None else "all_genres"
+    file_name = f"{genre_filename_name}_bar_scatter_plot.html"
     genres_list = df_emotions_by_genre_time['genres'].unique()
 
     if all_genres:
@@ -383,6 +384,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         col=1,
         title=None
     )
-    
-    pio.write_html(fig, file=file_name, auto_open=False, auto_play=False)
+    save_plot(fig, file_name)
+
+    fig.show()
     
