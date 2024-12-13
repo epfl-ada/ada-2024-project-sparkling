@@ -2,7 +2,9 @@ import plotly.graph_objects as go
 import pandas as pd
 import os
 
-from src.utils.plot_genres import EMOTIONS, GENRES, COLORS, PLOTS_PATH
+from src.utils.plot_genres import EMOTIONS
+from src.utils.initial_plots_data import COLORS
+from src.utils.save_plot import save_plot
 
 
 
@@ -95,13 +97,7 @@ def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_
         template="plotly_white",  # Use a clean white background style
     )
 
-    # Ensure the output directory for plots exists
-    if not os.path.exists(PLOTS_PATH):
-        os.makedirs(PLOTS_PATH)
-
-    # Save the chart as an interactive HTML file
-    filepath = os.path.join(PLOTS_PATH, f"{filename}.html")
-    fig.write_html(filepath)
+    save_plot(fig, filename)
 
     # Display the chart in the browser
     fig.show()

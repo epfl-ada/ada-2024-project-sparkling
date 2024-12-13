@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import pandas as pd
-import os
+from src.utils.initial_plots_data import COLORS
+from src.utils.save_plot import save_plot
 
 # List of emotions
 EMOTIONS = ["anger", "disgust", "fear", "joy", "sadness", "surprise"]
@@ -10,18 +11,6 @@ GENRES = ['Action', 'Adventure', 'Animated', 'Comedy', 'Crime', 'Disaster',
          'Documentary', 'Drama', 'Experimental', 'Fantasy', 'Historical', 
          'Horror', 'Musical', 'Noir', 'Pornographic', 'Propaganda', 'Romance', 
          'Science Fiction', 'Teen', 'Thriller', 'War', 'Western']
-
-# Dictionary of colors for each emotion
-COLORS = {
-    'joy': '#f3c35f',
-    'anger': '#e13c29',
-    'disgust': '#8bc664',
-    'sadness': '#85b8ed',
-    'fear': '#b99be5',
-    'surprise': '#de9f81'
-}
-
-PLOTS_PATH = 'plots'
 
 
 
@@ -101,13 +90,7 @@ def plot_emotion_distribution(df_with_emotions_normalized, df_main_genres, is_re
         template="plotly_white"  # Use a clean background style
     )
 
-    # Ensure the output directory exists
-    if not os.path.exists(PLOTS_PATH):
-        os.makedirs(PLOTS_PATH)
-
-    # Save the plot as an interactive HTML file
-    filepath = os.path.join(PLOTS_PATH, f"{filename}.html")
-    fig.write_html(filepath)
+    save_plot(fig, filename)
 
     # Display the chart in the browser
     fig.show()
