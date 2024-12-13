@@ -282,8 +282,16 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
                 ],
                 direction="down",
                 showactive=True,
+                x=-0.4,  # Move the dropdown menu to the left (negative x-values)
+                xanchor="right",  # Align the dropdown to the left
+                y=1,  # Position it higher above the plot
+                yanchor="top",  # Anchor the dropdown to the top
             )
         ],
+        coloraxis_colorbar=dict(
+            x=1.05  # Push the legend to the right to avoid overlap
+        ),
+        margin=dict(l=120, r=80, t=50, b=50)  # Add a bit more space for the dropdown
     )
     
     # Save the plot as an HTML file
@@ -633,32 +641,32 @@ def plot_separated_sankey_with_dropdown(emotions_split_df):
 
     fig.update_layout(
         title=dict(
-            text="Sankey Charts for Emotion Transitions Throughout a Movie",
+            text="",
             x=0.5,  # Center the title
-            font=dict(size=16)  # Optional: Adjust font size
+            font=dict(size=16)
         ),
         updatemenus=[
             dict(
                 active=0,
                 buttons=buttons,
-                direction="right",  # Menu horizontal
-                x=0,              # Centré horizontalement
-                xanchor="center",   # Ancrage au centre
-                y=1.25,             # Placé au-dessus du graphique
-                yanchor="top",      # Ancrage en haut
-                showactive=True     # Montre le bouton actif
+                direction="right", 
+                x=0,             
+                xanchor="center",  
+                y=1.3,            
+                yanchor="top",     
+                showactive=True    
             )
         ],
         annotations=[
             dict(
-                x=0.25, y=1.05,  
+                x=0.25, y=1.1,  
                 text="Transitions: Beginning to Middle",
                 showarrow=False,
                 font=dict(size=14),
                 xanchor="center"
             ),
             dict(
-                x=0.75, y=1.05,  
+                x=0.75, y=1.1,  
                 text="Transitions: Middle to End",
                 showarrow=False,
                 font=dict(size=14),
