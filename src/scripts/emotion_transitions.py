@@ -198,8 +198,7 @@ def get_transition_matrix(df, from_, to, group_emotions=False):
 
     return pd.DataFrame(transition_matrix)
 
-
-def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitions.html", group_emotions=False):
+def plot_heat_map_transitions_plotly(df, file_name="_heatmap_transitions.html", genre="All Genres", group_emotions=False):
     """
     Creates a heatmap visualization of transition probabilities between emotions or situations
     and saved it in an HTML file.
@@ -217,297 +216,62 @@ def heat_map_transitions_plotly(df, by_genre=False, file_name="heatmap_transitio
     else:
         map_to_idx = map_idx_emotion
         map_to_emotion = idx_to_emotion
-        
-    figures = []
-    genres_list = ['All Movies'] + (list(df.genres.unique()) if by_genre else [])
-    
-    # Create data for each genre
-    for genre in genres_list:
-        if genre == 'All Movies':
-            transitions_df = get_transition_matrix(df, 2, 3, group_emotions=group_emotions).add(get_transition_matrix(df, 1, 2, group_emotions=group_emotions), fill_value=0).multiply(0.5)
-            title = "Most common transitions among all movies."
-        else:
-            df_genre = df.loc[df.genres == genre]
-            transitions_df = get_transition_matrix(df_genre, 2, 3, group_emotions=group_emotions).add(get_transition_matrix(df_genre, 1, 2, group_emotions=group_emotions), fill_value=0).multiply(0.5)
-            title = f"Most common transitions in {genre}"
-    
-        transitions_df = transitions_df.div(transitions_df.sum(axis=1), axis=0).fillna(0)
-    
-        # Add a text representation of probabilities
-        text = transitions_df.map(lambda x: f"{x:.2}")  # Format probabilities as percentages
-    
-        figures.append((title, transitions_df, text, genre))
 
-    # Create dropdown menu
+    if genre=="All Genres":
+        df_genre = df
+    else:
+        df_genre = df.loc[df.genres==genre]
+
+    transitions_df = get_transition_matrix(df_genre, 2, 3, group_emotions=group_emotions).add(get_transition_matrix(df_genre, 1, 2, group_emotions=group_emotions), fill_value=0).multiply(0.5)
+    title = f"Most common transitions in {genre}"
+
+    # Add a text representation of probabilities
+    text = transitions_df.map(lambda x: f"{x:.2}") 
+
+    figure = (title, transitions_df, text, genre)
+    
     fig = go.Figure()
-
-    # Add traces for each genre
-    for idx, (title, transitions_df, text, genre) in enumerate(figures):
-        fig.add_trace(
-            go.Heatmap(
-                z=transitions_df.values,
-                x=[map_to_emotion[i] for i in range(len(map_to_emotion))],
-                y=[map_to_emotion[i] for i in range(len(map_to_emotion))],
-                colorscale='Greens',
-                visible=idx == 0,  # Only show the first heatmap initially
-                colorbar=dict(title='Transition Probability') if idx == 0 else None,
-                text=text.values,  # Add the text to display probabilities
-                texttemplate="%{text}",  # Format to show the text directly on the heatmap
-                textfont=dict(size=10),
-                hovertemplate=(
+    fig.add_trace(
+        go.Heatmap(
+            z=transitions_df.values,
+            x=[map_to_emotion[i] for i in range(len(map_to_emotion))],
+            y=[map_to_emotion[i] for i in range(len(map_to_emotion))],
+            colorscale='Greens',
+            colorbar=dict(title='Transition Probability'),
+            text=text.values,  # Add the text to display probabilities
+            texttemplate="%{text}",  # Format to show the text directly on the heatmap
+            textfont=dict(size=10),
+            hovertemplate=(
                 "<b>From</b>: %{y}<br>" 
                 "<b>To</b>: %{x}<br>"   
                 "<b>Probability</b>: %{z:.2f}<extra></extra>"  
-                ),
-            )
+            ),
         )
+    )
+    
     
     # Update layout with dropdown menu
     fig.update_layout(
-        title="Emotion Transition Heatmaps",
+        title=f"Emotion Transition Heatmaps for {genre} movies",
         xaxis=dict(title='To...'),
         yaxis=dict(title='From...', automargin=True),
-        updatemenus=[
-            dict(
-                buttons=[
-                    dict(
-                        label=genre,  # Use genre name as the label
-                        method="update",
-                        args=[
-                            {"visible": [i == idx for i in range(len(figures))]},  # Show only the selected genre
-                            {"title": title},
-                        ],
-                    )
-                    for idx, (title, _, _, genre) in enumerate(figures)
-                ],
-                direction="down",
-                showactive=True,
-                x=-0.4,  # Move the dropdown menu to the left (negative x-values)
-                xanchor="right",  # Align the dropdown to the left
-                y=1,  # Position it higher above the plot
-                yanchor="top",  # Anchor the dropdown to the top
-            )
-        ],
         coloraxis_colorbar=dict(
-            x=1.05  # Push the legend to the right to avoid overlap
+            x=1.05  
         ),
-        margin=dict(l=120, r=80, t=50, b=50)  # Add a bit more space for the dropdown
+        margin=dict(l=120, r=80, t=50, b=50) 
     )
     
     # Save the plot as an HTML file
     if group_emotions:
-        pio.write_html(fig, file='grouped_'+file_name, auto_open=False)
-        print(f"Heatmap saved as grouped_{file_name}")
+        pio.write_html(fig, file=genre+'_grouped_'+file_name, auto_open=False)
+        print(f"Heatmap saved as {genre}_grouped_{file_name}")
     else:
-        pio.write_html(fig, file=file_name, auto_open=False)
-        print(f"Heatmap saved as {file_name}")
+        pio.write_html(fig, file=genre+file_name, auto_open=False)
+        print(f"Heatmap saved as {genre+file_name}")
 
 
-def plot_sankey_chart_transitions(emotions_split_df):
-    """
-    Creates a Sankey diagram to visualize transitions between emotions across movie parts
-    and save it in an HTML file.
 
-    Args:
-        emotions_split_df (DataFrame): DataFrame containing split emotion data.
-    """
-    # List of states for each of the three parts of the sankey chart
-    states = emotion_columns * 3
-    
-    # Transition matrix from step 1 to step 2 (beginning to middle)
-    matrix1_to_2 = np.array(get_transition_matrix(emotions_split_df, 1, 2))
-    
-    # Transition matrix from step 2 to step 3 (middle to end)
-    matrix2_to_3 = np.array(get_transition_matrix(emotions_split_df, 2, 3))
-    
-    def matrix_to_links(matrix, offset_source, offset_target):
-        links = []
-        for i, row in enumerate(matrix):
-            total_outgoing = sum(row)  # Total outgoing flow from this source
-            for j, value in enumerate(row):
-                if value > 0:
-                    #normalized_value = value / total_outgoing  # Normalize flow
-                    links.append({
-                        "source": i + offset_source,
-                        "target": j + offset_target,
-                        "value": value 
-                    })
-        return links
-
-    
-    # transition Links
-    links1_to_2 = matrix_to_links(matrix1_to_2, offset_source=0, offset_target=6)
-    links2_to_3 = matrix_to_links(matrix2_to_3, offset_source=6, offset_target=12)
-    all_links = links1_to_2 + links2_to_3
-
-    
-    # associate each node to its right color
-    node_colors = [COLORS[state.split()[0]] for state in states]  # Couleur par état
-    
-    # associate each link going from a node to the node color
-    link_colors = [node_colors[link["source"]] for link in all_links]
-    
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                arrangement="snap",  # Force flows to span node height
-                node=dict(
-                    label=states,
-                    color=node_colors,
-                    pad=20,
-                    thickness=20,
-                    align="right"
-                ),
-                link=dict(
-                    source=[link["source"] for link in all_links],
-                    target=[link["target"] for link in all_links],
-                    value=[link["value"] for link in all_links],
-                    color=link_colors
-                )
-            )
-        ]
-    )
-    
-    # Update layout
-    fig.update_layout(
-        annotations=[
-            dict(x=0.02, y=-0.1, text="Beginning", showarrow=False, font=dict(size=14), xanchor="center"),
-            dict(x=0.5, y=-0.1, text="Middle", showarrow=False, font=dict(size=14), xanchor="center"),
-            dict(x=0.98, y=-0.1, text="End", showarrow=False, font=dict(size=14), xanchor="center"),
-        ],
-        title_text="Sankey Chart: Emotion transitions throughout a movie",
-        font_size=12,
-        margin=dict(l=20, r=20, t=30, b=50)
-    )
-    
-    pio.write_html(fig, file="sankey_charts_transitions.html", auto_open=False)
-
-
-def plot_separated_sankey(emotions_split_df):
-    """
-    Creates a Sankey diagram to visualize transitions between emotions across movie parts
-    and save it in an HTML file. Separate 1->2 and 2->3.
-
-    Args:
-        emotions_split_df (DataFrame): DataFrame containing split emotion data.
-    """
-    # Transition matrices
-    matrix1_to_2 = np.array(get_transition_matrix(emotions_split_df, 1, 2))
-    matrix2_to_3 = np.array(get_transition_matrix(emotions_split_df, 2, 3))
-
-    # Convert matrices to links
-    def matrix_to_links(matrix, offset_source, offset_target):
-        links = []
-        for i, row in enumerate(matrix):
-            total_outgoing = sum(row)
-            for j, value in enumerate(row):
-                if value > 0:
-                    links.append({
-                        "source": i + offset_source,
-                        "target": j + offset_target,
-                        "value": value
-                    })
-        return links
-
-    # Define states
-    states = emotion_columns  # Define a single column of states
-    node_colors = [COLORS[state.split()[0]] for state in states]
-
-    # Create subplots with domain type
-    fig = make_subplots(
-        rows=1,
-        cols=2,
-        specs=[[{"type": "domain"}, {"type": "domain"}]], 
-    )
-
-    # Sankey Diagram for 1 → 2
-    links1_to_2 = matrix_to_links(matrix1_to_2, offset_source=0, offset_target=len(states))
-    link_colors1 = [node_colors[link["source"]] for link in links1_to_2]
-    fig.add_trace(
-        go.Sankey(
-            arrangement="snap",
-            node=dict(
-                label=states + states,  # States are repeated for both sides
-                color=node_colors * 2,  # Duplicate colors for nodes
-                pad=20,
-                thickness=20,
-                hovertemplate="<b>Emotion:</b> %{label}<extra></extra>"
-            ),
-            link=dict(
-                source=[link["source"] for link in links1_to_2],
-                target=[link["target"] for link in links1_to_2],
-                value=[link["value"] for link in links1_to_2],
-                color=link_colors1,
-                hovertemplate=(
-                    "<b>From:</b> %{source.label}<br>"
-                    "<b>To:</b> %{target.label}<br>"
-                    "<b>Value:</b> %{value:.0%}<extra></extra>"  # Customize link hover
-                )
-            )
-        ),
-        row=1, col=1
-    )
-
-    # Sankey Diagram for 2 → 3
-    links2_to_3 = matrix_to_links(matrix2_to_3, offset_source=0, offset_target=len(states))
-    link_colors2 = [node_colors[link["source"]] for link in links2_to_3]
-    fig.add_trace(
-        go.Sankey(
-            arrangement="snap",
-            node=dict(
-                label=states + states,
-                color=node_colors * 2,
-                pad=20,
-                thickness=20,
-                hovertemplate="<b>Emotion:</b> %{label}<extra></extra>"
-            ),
-            link=dict(
-                source=[link["source"] for link in links2_to_3],
-                target=[link["target"] for link in links2_to_3],
-                value=[link["value"] for link in links2_to_3],
-                color=link_colors2,
-                hovertemplate=(
-                    "<b>From:</b> %{source.label}<br>"
-                    "<b>To:</b> %{target.label}<br>"
-                    "<b>Value:</b> %{value:.0%}<extra></extra>"  # Customize link hover
-                )
-            )
-        ),
-        row=1, col=2
-    )
-
-    fig.update_layout(
-        title=dict(
-            text="Sankey Charts for Emotion Transitions Throughout a Movie",
-            x=0.5,  # Center the title
-            font=dict(size=16)  # Optional: Adjust font size
-        ),
-        annotations=[
-            dict(
-                x=0.25, y=1.05,  
-                text="Transitions: Beginning to Middle",
-                showarrow=False,
-                font=dict(size=14),
-                xanchor="center"
-            ),
-            dict(
-                x=0.75, y=1.05,  
-                text="Transitions: Middle to End",
-                showarrow=False,
-                font=dict(size=14),
-                xanchor="center"
-            ),
-            dict(x=0.02, y=-0.1, text="Beginning", showarrow=False, font=dict(size=14), xanchor="center"),
-            dict(x=0.43, y=-0.1, text="Middle", showarrow=False, font=dict(size=14), xanchor="center"),
-            dict(x=0.57, y=-0.1, text="Middle", showarrow=False, font=dict(size=14), xanchor="center"),
-            dict(x=0.98, y=-0.1, text="End", showarrow=False, font=dict(size=14), xanchor="center"),
-        ],
-        margin=dict(l=20, r=20, t=80, b=50) 
-    )
-
-    pio.write_html(fig, file="sep_sankey_charts_transitions.html", auto_open=False)
-
-def plot_separated_sankey_with_dropdown(emotions_split_df):
+def plot_separated_sankey_plotly(emotions_split_df, genre="All Genres"):
     """
     Creates a Sankey diagram to visualize transitions between emotions across movie parts
     and save it in an HTML file. Separate 1->2 and 2->3 and gives the choice of the genre 
@@ -529,95 +293,94 @@ def plot_separated_sankey_with_dropdown(emotions_split_df):
         specs=[[{"type": "domain"}, {"type": "domain"}]], 
     )
 
-    # Prepare Sankey diagrams for each genre
-    for genre in genres:
-        # Filter dataframe for the current genre
-        genre_df = emotions_split_df[emotions_split_df["genres"] == genre]
+    if genre=="All Genres":
+        genre_df = emotions_split_df
+    else:
+        genre_df = emotions_split_df[emotions_split_df["genres"]==genre]
+    
+    # Transition matrices
+    matrix1_to_2 = np.array(get_transition_matrix(genre_df, 1, 2))
+    matrix2_to_3 = np.array(get_transition_matrix(genre_df, 2, 3))
 
-        # Transition matrices
-        matrix1_to_2 = np.array(get_transition_matrix(genre_df, 1, 2))
-        matrix2_to_3 = np.array(get_transition_matrix(genre_df, 2, 3))
+    # Convert matrices to links
+    def matrix_to_links(matrix, offset_source, offset_target):
+        links = []
+        for i, row in enumerate(matrix):
+            total_outgoing = sum(row)
+            for j, value in enumerate(row):
+                if value > 0:
+                    links.append({
+                        "source": i + offset_source,
+                        "target": j + offset_target,
+                        "value": value
+                    })
+        return links
 
-        # Convert matrices to links
-        def matrix_to_links(matrix, offset_source, offset_target):
-            links = []
-            for i, row in enumerate(matrix):
-                total_outgoing = sum(row)
-                for j, value in enumerate(row):
-                    if value > 0:
-                        links.append({
-                            "source": i + offset_source,
-                            "target": j + offset_target,
-                            "value": value
-                        })
-            return links
+    links1_to_2 = matrix_to_links(matrix1_to_2, offset_source=0, offset_target=len(states))
+    link_colors1 = [node_colors[link["source"]] for link in links1_to_2]
 
-        links1_to_2 = matrix_to_links(matrix1_to_2, offset_source=0, offset_target=len(states))
-        link_colors1 = [node_colors[link["source"]] for link in links1_to_2]
+    links2_to_3 = matrix_to_links(matrix2_to_3, offset_source=0, offset_target=len(states))
+    link_colors2 = [node_colors[link["source"]] for link in links2_to_3]
 
-        links2_to_3 = matrix_to_links(matrix2_to_3, offset_source=0, offset_target=len(states))
-        link_colors2 = [node_colors[link["source"]] for link in links2_to_3]
-
-        # Add traces for this genre (hidden initially)
-        fig.add_trace(
-            go.Sankey(
-                visible=False,
-                arrangement="snap",
-                node=dict(
-                    label=states + states,  
-                    color=node_colors * 2,  
-                    pad=20,
-                    thickness=20,
-                    hovertemplate="<b>Emotion:</b> %{label}<extra></extra>"
-                ),
-                link=dict(
-                    source=[link["source"] for link in links1_to_2],
-                    target=[link["target"] for link in links1_to_2],
-                    value=[link["value"] for link in links1_to_2],
-                    color=link_colors1,
-                    hovertemplate=(
-                        "<b>From:</b> %{source.label}<br>"
-                        "<b>To:</b> %{target.label}<br>"
-                        "<b>Value:</b> %{value:.0%}<extra></extra>"  
-                    )
-                ),
-                domain=dict(
-                    x=[0.0, 0.5], 
-                    y=[0.0, 1.0]
+    fig.add_trace(
+        go.Sankey(
+            visible=False,
+            arrangement="snap",
+            node=dict(
+                label=states + states,  
+                color=node_colors * 2,  
+                pad=20,
+                thickness=20,
+                hovertemplate="<b>Emotion:</b> %{label}<extra></extra>"
+            ),
+            link=dict(
+                source=[link["source"] for link in links1_to_2],
+                target=[link["target"] for link in links1_to_2],
+                value=[link["value"] for link in links1_to_2],
+                color=link_colors1,
+                hovertemplate=(
+                    "<b>From:</b> %{source.label}<br>"
+                    "<b>To:</b> %{target.label}<br>"
+                    "<b>Value:</b> %{value:.0%}<extra></extra>"  
                 )
             ),
-            row=1, col=1
-        )
+            domain=dict(
+                x=[0.0, 0.5], 
+                y=[0.0, 1.0]
+            )
+        ),
+        row=1, col=1
+    )
 
-        fig.add_trace(
-            go.Sankey(
-                visible=False,
-                arrangement="snap",
-                node=dict(
-                    label=states + states,
-                    color=node_colors * 2,
-                    pad=20,
-                    thickness=20,
-                    hovertemplate="<b>Emotion:</b> %{label}<extra></extra>"
-                ),
-                link=dict(
-                    source=[link["source"] for link in links2_to_3],
-                    target=[link["target"] for link in links2_to_3],
-                    value=[link["value"] for link in links2_to_3],
-                    color=link_colors2,
-                    hovertemplate=(
-                        "<b>From:</b> %{source.label}<br>"
-                        "<b>To:</b> %{target.label}<br>"
-                        "<b>Value:</b> %{value:.0%}<extra></extra>"  # Customize link hover
-                    )
-                ),
-                domain=dict(
-                    x=[0.5, 1.0],  
-                    y=[0.0, 1.0]
+    fig.add_trace(
+        go.Sankey(
+            visible=False,
+            arrangement="snap",
+            node=dict(
+                label=states + states,  
+                color=node_colors * 2,  
+                pad=20,
+                thickness=20,
+                hovertemplate="<b>Emotion:</b> %{label}<extra></extra>"
+            ),
+            link=dict(
+                source=[link["source"] for link in links2_to_3],
+                target=[link["target"] for link in links2_to_3],
+                value=[link["value"] for link in links2_to_3],
+                color=link_colors1,
+                hovertemplate=(
+                    "<b>From:</b> %{source.label}<br>"
+                    "<b>To:</b> %{target.label}<br>"
+                    "<b>Value:</b> %{value:.0%}<extra></extra>"  
                 )
             ),
-            row=1, col=2
-        )
+            domain=dict(
+                x=[0.5, 1.0], 
+                y=[0.0, 1.0]
+            )
+        ),
+        row=1, col=2
+    )
     
     # Make the first genre visible
     fig.data[0].visible = True
@@ -641,22 +404,10 @@ def plot_separated_sankey_with_dropdown(emotions_split_df):
 
     fig.update_layout(
         title=dict(
-            text="",
+            text=f"Transitions throughout {genre} movies",
             x=0.5,  # Center the title
             font=dict(size=16)
         ),
-        updatemenus=[
-            dict(
-                active=0,
-                buttons=buttons,
-                direction="right", 
-                x=0,             
-                xanchor="center",  
-                y=1.3,            
-                yanchor="top",     
-                showactive=True    
-            )
-        ],
         annotations=[
             dict(
                 x=0.25, y=1.1,  
@@ -680,4 +431,4 @@ def plot_separated_sankey_with_dropdown(emotions_split_df):
         margin=dict(l=20, r=20, t=80, b=50) 
     )
 
-    pio.write_html(fig, file="sankey_charts_transitions.html", auto_open=False)
+    pio.write_html(fig, file=genre + "_sankey_charts_transitions.html", auto_open=False)
