@@ -264,10 +264,8 @@ def plot_heat_map_transitions_plotly(df, file_name="_heatmap_transitions.html", 
     # Save the plot as an HTML file
     if group_emotions:
         pio.write_html(fig, file=genre+'_grouped_'+file_name, auto_open=False)
-        print(f"Heatmap saved as {genre}_grouped_{file_name}")
     else:
         pio.write_html(fig, file=genre+file_name, auto_open=False)
-        print(f"Heatmap saved as {genre+file_name}")
 
 
 
@@ -367,7 +365,7 @@ def plot_separated_sankey_plotly(emotions_split_df, genre="All Genres"):
                 source=[link["source"] for link in links2_to_3],
                 target=[link["target"] for link in links2_to_3],
                 value=[link["value"] for link in links2_to_3],
-                color=link_colors1,
+                color=link_colors2,
                 hovertemplate=(
                     "<b>From:</b> %{source.label}<br>"
                     "<b>To:</b> %{target.label}<br>"
