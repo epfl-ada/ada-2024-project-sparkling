@@ -9,7 +9,9 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from wordcloud import WordCloud
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
-from src.utils.plot_genres import EMOTIONS, COLORS, PLOTS_PATH
+from src.utils.plot_genres import EMOTIONS, COLORS
+
+PLOTS_PATH = "plots"
 
 # Color mapping for emotions in word clouds
 EMOTION_COLORS = {
