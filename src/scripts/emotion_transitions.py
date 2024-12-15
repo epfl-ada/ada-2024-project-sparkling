@@ -3,20 +3,12 @@ import pandas as pd
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.io as pio
 
 import json
 
 from src.data.merge_genres import get_genres_merged
-
-COLORS = {
-    'joy': '#f3c35f',
-    'anger': '#e13c29',
-    'disgust': '#8bc664',
-    'sadness': '#85b8ed',
-    'fear': '#b99be5',
-    'surprise': '#de9f81'
-}
+from src.utils.initial_plots_data import COLORS
+from src.utils.save_plot import save_plot
 
 emotion_columns = ['anger', 'disgust', 'fear', 'joy', 'sadness', 'surprise']
 situation_columns = ['Positive', 'Negative', 'Plot Twist']
@@ -198,7 +190,7 @@ def get_transition_matrix(df, from_, to, group_emotions=False):
 
     return pd.DataFrame(transition_matrix)
 
-def plot_heat_map_transitions_plotly(df, file_name="_heatmap_transitions.html", genre="All Genres", group_emotions=False):
+def plot_heat_map_transitions_plotly(df, file_name="_heatmap_transitions", genre="All Genres", group_emotions=False):
     """
     Creates a heatmap visualization of transition probabilities between emotions or situations
     and saved it in an HTML file.
@@ -263,9 +255,9 @@ def plot_heat_map_transitions_plotly(df, file_name="_heatmap_transitions.html", 
     
     # Save the plot as an HTML file
     if group_emotions:
-        pio.write_html(fig, file=genre+'_grouped_'+file_name, auto_open=False)
+        save_plot(fig, genre+'_grouped_'+file_name)
     else:
-        pio.write_html(fig, file=genre+file_name, auto_open=False)
+        save_plot(fig, genre+file_name)
 
 
 
@@ -429,4 +421,4 @@ def plot_separated_sankey_plotly(emotions_split_df, genre="All Genres"):
         margin=dict(l=20, r=20, t=80, b=50) 
     )
 
-    pio.write_html(fig, file=genre + "_sankey_charts_transitions.html", auto_open=False)
+    save_plot(fig, genre + "_sankey_charts_transitions")

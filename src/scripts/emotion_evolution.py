@@ -198,7 +198,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         all_genres (bool): If True, includes all genres in the plot; otherwise, filters for the specified genre.
     """
     genre_filename_name = genre if genre is not None else "all_genres"
-    file_name = f"{genre_filename_name}_bar_scatter_plot.html"
+    file_name = f"{genre_filename_name}_bar_scatter_plot"
     genres_list = df_emotions_by_genre_time['genres'].unique()
 
     if all_genres:
@@ -387,5 +387,5 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     )
     save_plot(fig, file_name)
 
-    fig.show()
+    # fig.show()
     
