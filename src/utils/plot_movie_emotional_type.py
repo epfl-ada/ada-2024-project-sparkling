@@ -6,7 +6,7 @@ from src.data.merge_genres import get_genres_merged
 from src.utils.initial_plots_data import COLORS
 from src.utils.save_plot import save_plot
 
-def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_review=False, k=2, clusters_color = {0: "palevioletred", 1: "steelblue"}, clusters_name = {0: "Cluster 0", 1: "Cluster 1"}, clusters_col_subplot = {0:1, 1:2}):
+def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_review=False, k=2, clusters_color = {0: "palevioletred", 1: "steelblue"}, clusters_name = {0: "0", 1: "1"}, clusters_col_subplot = {0:1, 1:2}):
     """
     Given the normalized emotions associated to movie plot or movie reviews along with the dataframe containing the genres of the movies, 
     cluster in k clusters using Kmeans and displays the mean movie genres contained in the clusters.
@@ -100,7 +100,7 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
     centroids = pd.DataFrame(centroids, index=genre_mean_per_cluster.index, columns=emotions)
     return genre_mean_per_cluster, centroids
 
-def plot_emotions_centroids(df_centroids, clusters_name = {0: "Cluster 0", 1: "Cluster 1"}, clusters_col_subplot = {0:1, 1:2} , is_reviews=False):
+def plot_emotions_centroids(df_centroids, clusters_name = {0: "0", 1: "1"}, clusters_col_subplot = {0:1, 1:2} , is_reviews=False):
     """
     Given the clusters emotions centroids, plot as bar plots the emotions of the centroids
 

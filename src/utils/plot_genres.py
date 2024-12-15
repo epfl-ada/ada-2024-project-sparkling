@@ -14,7 +14,7 @@ GENRES = ['Action', 'Adventure', 'Animated', 'Comedy', 'Crime', 'Disaster',
 
 
 
-def plot_emotion_distribution(df_with_emotions_normalized, df_main_genres, is_review=False, filename='plot', specific_emotion=None):
+def plot_emotion_distribution(df_with_emotions_normalized, df_main_genres, is_review=False, specific_emotion=None):
     """
     Generates a stacked bar chart to visualize the distribution of emotions across movie genres.
 
@@ -25,8 +25,6 @@ def plot_emotion_distribution(df_with_emotions_normalized, df_main_genres, is_re
             and columns represent genres.
         is_review (bool, optional): Indicates whether emotion scores are derived from reviews (True) or plots (False).
             Defaults to False.
-        filename (str, optional): Name of the output HTML file (without extension) where the plot will be saved.
-            Defaults to 'plot'.
         specific_emotion (str, optional): If specified, highlights only the provided emotion in the plot,
             hiding others. Should match the base emotion name (e.g., "joy", "anger"). Defaults to None.
 
@@ -90,7 +88,21 @@ def plot_emotion_distribution(df_with_emotions_normalized, df_main_genres, is_re
         template="plotly_white"  # Use a clean background style
     )
 
-    save_plot(fig, filename)
+    if specific_emotion is not None and not is_review:
+        fig.update_layout(
+            yaxis=dict(
+                range=[0, 30],
+            ),
+        )
+
+    if specific_emotion is not None and is_review:
+        fig.update_layout(
+            yaxis=dict(
+                range=[0, 45],
+            ),
+        )
+
+    save_plot(fig, f"emotion_distribution_of_movie_{'reviews' if is_review else 'plots'}_across_genres")
 
     # Display the chart in the browser
     fig.show()

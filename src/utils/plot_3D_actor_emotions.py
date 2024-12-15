@@ -128,7 +128,7 @@ def plot_3D_actor_emotion(df_data, colors_label, title, save_fig_name):
     Display a 3D scatter with the given title and display as 'hover' action over the points the name of the actor associated to the point.
     """
 
-    fig = px.scatter_3d(df_data, custom_data=['actor_name'], x=0, y=1, z=2, color=colors_label, width=750, height=750)
+    fig = px.scatter_3d(df_data, custom_data=['actor_name'], x=0, y=1, z=2, color=colors_label)
 
     # https://stackoverflow.com/questions/68960000/plotly-how-to-rename-legend-elements-of-a-plotly-express-stacked-bar-plot
     # Modified to modify the marker color

@@ -23,13 +23,14 @@ EMOTION_COLORS = {
     'surprise': 'Oranges' # Orange for surprise
 }
 
-def generate_word_clouds_by_emotion(df_movies_with_emotions, top_emotions=1):
+def generate_word_clouds_by_emotion(df_movies_with_emotions, top_emotions=1, show_wordclouds=False):
     """
     Generates and displays word clouds based on the most frequent words for each emotion.
 
     Args:
     df_movies_with_emotions (pd.DataFrame): DataFrame containing movie plot texts and emotion scores.
     top_emotions (int): Number of top emotions to consider per plot.
+    show_wordclouds: Whether to show the wordclouds
     """
     # Columns for normalized emotion scores
     emotion_columns = [f"normalized_plot_{emotion}_without_neutral" for emotion in EMOTIONS]
@@ -88,11 +89,12 @@ def generate_word_clouds_by_emotion(df_movies_with_emotions, top_emotions=1):
                 mask=black_mask,
             ).generate_from_frequencies(word_counts)
 
-            # Display the word cloud
-            plt.figure(figsize=(10, 5))
-            plt.imshow(wordcloud, interpolation="bilinear")
-            plt.axis("off")
-            plt.show()
+            if show_wordclouds:
+                # Display the word cloud
+                plt.figure(figsize=(10, 5))
+                plt.imshow(wordcloud, interpolation="bilinear")
+                plt.axis("off")
+                plt.show()
 
             # Save the word cloud image
             save_wordcloud_image(wordcloud, emotion_name)
@@ -104,13 +106,13 @@ def generate_word_clouds_by_emotion(df_movies_with_emotions, top_emotions=1):
             # Save the combined image
             save_combined_image(combined_image, emotion_name)
 
-    # Afficher les 10 mots les plus fréquents pour chaque émotion
-    print("\nTop 10 mots par émotion:")
+    # Show top 10 most present words per emotions
+    print("\nTop 10 words per emotion:")
     for emotion, word_counts in word_counts_by_emotion.items():
         if word_counts:
-            emotion_name = emotion.split('_')[2]  # Extraire le nom de l'émotion
+            emotion_name = emotion.split('_')[2]  # Extract emotion name
             top_words = word_counts.most_common(10)
-            print(f"\nÉmotion: {emotion_name.capitalize()}")
+            print(f"\nEmotion: {emotion_name.capitalize()}")
             for word, count in top_words:
                 print(f"  {word}: {count}")
 

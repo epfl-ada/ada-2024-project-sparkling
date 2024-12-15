@@ -13,4 +13,3 @@ def save_plot(fig, figure_name):
 
     filepath = os.path.join(PLOTS_PATH, f"{figure_name}.html")
     fig.write_html(filepath)
-    print(f"Figure saved in {filepath}")

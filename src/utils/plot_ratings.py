@@ -8,7 +8,7 @@ from src.utils.save_plot import save_plot
 
 
 
-def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_reviews_with_emotions_normalized=None, is_review=False, filename='plot', specific_emotion=None):
+def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_reviews_with_emotions_normalized=None, is_review=False, specific_emotion=None):
     """
     Generates a stacked bar chart visualizing the percentage distribution of emotions 
     across average movie rating bins (e.g., 0-1, 1-2, ..., 9-10).
@@ -20,7 +20,6 @@ def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_
             derived from movie reviews. Required if `is_review` is True. Defaults to None.
         is_review (bool, optional): Indicates whether to use review-based emotion scores (True) or plot-based scores (False). 
             Defaults to False.
-        filename (str, optional): Name of the output HTML file (without extension) for saving the chart. Defaults to 'plot'.
         specific_emotion (str, optional): If specified, highlights only the provided emotion in the plot, hiding others. 
             Should match the base emotion name (e.g., "joy", "anger"). Defaults to None.
 
@@ -97,7 +96,7 @@ def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_
         template="plotly_white",  # Use a clean white background style
     )
 
-    save_plot(fig, filename)
+    save_plot(fig, f"emotion_distribution_of_movie_{'reviews' if is_review else 'plots'}_by_average_movie_rating_bins")
 
     # Display the chart in the browser
     fig.show()

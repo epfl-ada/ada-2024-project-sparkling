@@ -387,5 +387,5 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     )
     save_plot(fig, file_name)
 
-    # fig.show()
+    fig.show()
     
