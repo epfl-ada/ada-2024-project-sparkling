@@ -6,6 +6,7 @@ conda create --name <env_name> python=3.11.9
 conda activate <env_name>
 pip install -r pip_requirements.txt
 ```
+The pip_requirements.txt has been generated from an Apple M1 Max computer.
 
 ## Website containing the datastory 
 Link: https://epfl-ada.github.io/ada-2024-project-sparkling/
