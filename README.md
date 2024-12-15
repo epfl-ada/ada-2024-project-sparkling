@@ -24,7 +24,7 @@ Movies have a unique power to immerse us, that we feel as if we're living in the
 * Is there an emotion that prevails over the years through the released movies ? Using this question, we uncovered emotional trends over the years.  
 * Is there some actor that is always associated with certain emotions ?  
 * For each of the questions above, we also uncovered the question for reviews emotions instead of the movie plots emotions, and compared the diverse results.  
-* Can we see some patterns in the progression of emotions throughout a movie? This helped us have an idea of the correlation between the genre of the movie and the emotions that we are expected to feel while watching them.
+* Can we see some patterns in the progression of emotions throughout a movie? This helped us to have an idea on the correlation between the genre of the movie and the emotions that we are expected to feel while watching them.
 
 
 #### Data preparation
