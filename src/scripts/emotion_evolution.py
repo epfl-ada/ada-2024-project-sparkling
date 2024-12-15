@@ -233,7 +233,8 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         x=emotion_columns_sorted,
         y=emotion_means,
         marker=dict(color=[emotion_colors[col] for col in emotion_columns_sorted]),
-        name=f"Mean score ({1})"
+        hovertemplate="Proportion : %{y:.2f}<extra></extra>",
+        name="",
     ), row=1, col=1)
                 
     scatter_data = []
@@ -249,7 +250,8 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
                 color=emotion_colors[emotion],
                 symbol="triangle-up" if value > 0 else "triangle-down",
             ),
-            name=f"Variation ({1})"
+                hovertemplate="Variation : %{y:.2f}%<extra></extra>",
+            name="",
         ), row=1, col=2)
 
     frames = []
@@ -272,7 +274,8 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
                 x=emotion_columns_sorted,
                 y=emotion_means,
                 marker=dict(color=[emotion_colors[col] for col in emotion_columns_sorted]),
-                name=f"Mean score ({period})"
+                hovertemplate="Proportion : %{y:.2f}<extra></extra>",
+                name="", 
             )
                 
             scatter_data = []
@@ -288,7 +291,8 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
                         color=emotion_colors[emotion],
                         symbol="triangle-up" if value > 0 else "triangle-down",
                     ),
-                    name=f"Variation ({period})"
+                    hovertemplate="Variation : %{y:.2f}%<extra></extra>",
+                    name="" 
                 ))
 
             frame = go.Frame(
@@ -325,8 +329,6 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     fig.update(frames=frames)
     
     fig.update_layout(
-        width=1200,
-        height=600,
         xaxis_title="Emotions",
         yaxis_title="Emotions mean proportion",
         xaxis2_title="Emotions",
@@ -350,7 +352,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     fig.add_annotation(
         x=0.5,  
         y=-0.6, 
-        text="<b>Distribution and Variation of emotion throughout the movies.</b>",
+        text="", #<b>Distribution and Variation of emotion throughout the movies.</b>",
         showarrow=False,
         xref="paper",
         yref="paper",
@@ -359,11 +361,10 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     )
     
     fig.update_yaxes(
-        range=[-70, 70], 
+        range=[-100, 100], 
         title="Variation (%)",
         row=1,
         col=2,
-        showticklabels=False,
     )
     
     fig.update_yaxes(
