@@ -11,7 +11,7 @@ pip install -r pip_requirements.txt
 Link: https://epfl-ada.github.io/ada-2024-project-sparkling/
 
 ### Reading the `result.ipynb`
-Please download the `result.ipynb` file in order to see the dynamic plots
+Please download the `result.ipynb` file in order to see the plots
 
 ## Project proposal 
 
