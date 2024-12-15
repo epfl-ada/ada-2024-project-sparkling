@@ -3,10 +3,11 @@ import numpy as np
 from scipy.stats import pearsonr
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from src.utils.save_plot import save_plot
 
 
 
-def plot_variation(type, data):
+def plot_variation(type, data, df_movies=None):
     
     """
     This function calculates the mean emotion scores and their percentage variations across predefined 
@@ -18,6 +19,7 @@ def plot_variation(type, data):
     - data (pd.DataFrame):Dataframe containing the following:
         'release_month': Numeric month of release
         Emotion score columns in the format: 'normalized_<data_type>_<emotion>_without_neutral'
+    - df_movies: Dataframe containing movies metadata
 
     Returns:
     - pd.DataFrame: Dataframe containing percentage variations of emotion scores between consecutive periods
@@ -27,6 +29,12 @@ def plot_variation(type, data):
         Mean emotion scores for each period : bar plot
         Percentage variations in scores from the previous period : scatter plot
     """
+
+    if type == "review":
+        data=data.select_dtypes(exclude=['object'])
+        data = data.groupby(by='wikipedia_ID').mean()
+        data = pd.merge(data, df_movies, on='wikipedia_ID', how='inner')
+
     # type : plots or reviews data
     # Define the periods of year, emotion columns and emojis, emotion colors and display names
     
@@ -271,7 +279,7 @@ def plot_variation(type, data):
     )
     
     fig.show()
-    #pio.write_html(fig, file=f"variation_{type}.html", auto_open=False, auto_play=False, full_html=True)
+    save_plot(fig, f"variation_{type}")
     return periodic_emotions_diff
 
 
@@ -393,4 +401,4 @@ def corr_p_value_plot_periods(df1, df2):
     )
 
     fig.show()
-    #pio.write_html(fig, file="variation_corr_pvalues.html", auto_open=False, auto_play=False)
+    save_plot(fig, "variation_corr_pvalues")
