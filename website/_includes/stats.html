@@ -1,0 +1,109 @@
+<style>
+    .container-orbs-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2%;
+    }
+
+    .container-orb {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 3%;
+    }
+
+    .orb {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        box-shadow: 0 0 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+
+    .orb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 30px;
+    }
+
+    .orb.joy {
+        background: radial-gradient(circle, #f9d71c 20%, rgba(0,0,0,0) 70%);
+        box-shadow: 0 0 15px #f9d71c;
+        color: #000;
+    }
+
+    .orb.sadness {
+        background: radial-gradient(circle, #3498db 20%, rgba(0,0,0,0) 70%);
+        box-shadow: 0 0 15px #3498db;
+        color: #fff;
+    }
+
+    .orb.anger {
+        background: radial-gradient(circle, #e74c3c 20%, rgba(0,0,0,0) 70%);
+        box-shadow: 0 0 15px #e74c3c;
+        color: #fff;
+    }
+
+    .orb.disgust {
+        background: radial-gradient(circle, #2ecc71 20%, rgba(0,0,0,0) 70%);
+        box-shadow: 0 0 15px #2ecc71;
+        color: #000;
+    }
+
+    .info-orb {
+        text-align: center;
+        max-width: 600px;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 0 15px;
+        }
+        50% {
+            box-shadow: 0 0 30px;
+        }
+    }
+</style>
+
+<div class class="container-orbs-text">
+    <div class="container-orb">
+        <div class="orb joy" data-model="Pearson Correlation">Pearson Correlation</div>
+        <div class="orb sadness" data-model="Spearman Correlation">Spearman Correlation</div>
+        <div class="orb anger" data-model="PCA">PCA</div>
+        <div class="orb disgust" data-model="KMeans">KMeans</div>
+    </div>
+    <div class="info-orb" id="info-orb"></div>
+    <img src="images/fear_joy_dialogue.jpg" alt=" Fear and Joy Dialogue" style="max-width: 70%;">
+</div>
+
+
+<script>
+    const orbs = document.querySelectorAll('.orb');
+    const info = document.getElementById('info-orb');
+
+    const modelDetails = {
+        'Pearson Correlation': `Pearson Correlation measures the linear relationship between two variables. It calculates a coefficient ranging from -1 to 1, where 1 indicates a perfect positive linear relationship, -1 indicates a perfect negative linear relationship, and 0 means no linear relationship at all.`,
+        'Spearman Correlation': `Spearman Correlation assesses how well the relationship between two variables can be described using a monotonic function. It is based on the ranks of the data rather than their actual values, making it useful for non-linear but monotonic relationships.`,
+        'PCA': `Principal Component Analysis (PCA) is a dimensionality reduction technique. It transforms a dataset with many variables into a smaller set of uncorrelated variables called principal components, which capture the most variance in the data.`,
+        'KMeans': `KMeans is a clustering algorithm used to partition data into k distinct groups. Each data point belongs to the cluster with the nearest mean, effectively organizing data into clusters based on similarity.`
+    };
+
+    const defaultModel = 'Pearson Correlation';
+    info.innerHTML = `<h2>${defaultModel}</h2><p>${modelDetails[defaultModel]}</p>`;
+
+    orbs.forEach(orb => {
+        orb.addEventListener('click', () => {
+            const model = orb.dataset.model;
+            info.innerHTML = `<h2>${model}</h2><p>${modelDetails[model]}</p>`;
+        });
+    });
+</script>

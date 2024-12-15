@@ -1,0 +1,39 @@
+<style>
+  .container-resources {
+      display: flex;
+      align-items: center;
+      width: 100%;
+  }
+
+  .container-resources img {
+      height: auto;
+      max-height: 100%;
+      max-width: 25%;
+      margin-top: -5%;
+      transition: transform 0.2s
+  }
+
+  .container-resources img:hover {
+    transform: scale(1.05);
+  }
+
+  .container-resources p {
+      padding-left: 5%;
+      margin: 0;
+  }
+</style>
+
+<div class="container-resources">
+    <img src="images/data_insideout-transformed.png" alt="Inside Out Brain">
+    <p style="text-align: justify;">
+      The foundation of our analysis is the <b>CMU Movies dataset</b>, which provides valuable information, including countries, genres, release years, and actors. 
+      Additionally, we enriched the dataset by obtaining : <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;- IMDb ratings from IMDb's official website <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;- IMDb reviews from IMDb’s official website <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;- Release year from Wikidata <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;- Release month from Wikidata <br>
+      The processed final dataset comprises 11,564 movies and  a total of 449,824 reviews ensuring a comprehensive and robust basis for analysis.
+      <br><br>
+      Naturally, the most important aspect of our dataset is the <b>emotional part</b>. The model we use for the emotion calculations is the <b>Emotion English DistilRoberta</b> model from <a href="https://huggingface.co/j-hartmann/emotion-english-distilroberta-base" target="_blank">HuggingFace</a>. It extracts the following emotions : <b>anger</b>, <b>disgust</b>, <b>fear</b>, <b>joy</b>, <b>neutral</b>, <b>sadness</b>, and <b>surprise</b> from a text input.
+    </p>
+</div>

@@ -1,0 +1,118 @@
+<!-- Section des boutons -->
+<div style="display: flex; flex-direction: row; gap: 1%; margin-right: 30%; margin-bottom: 1%;">
+  <button id="emotionsGenresJoyBtn" onclick="showGraphEmotionsGenres('Joy')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #f3c35f; border-radius: 5px; flex: 1;">Joy</button>
+  <button id="emotionsGenresSadnessBtn" onclick="showGraphEmotionsGenres('Sadness')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #85b8ed; border-radius: 5px; flex: 1;">Sadness</button>
+  <button id="emotionsGenresAngerBtn" onclick="showGraphEmotionsGenres('Anger')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; color: white; background-color: #e13c29; border-radius: 5px; flex: 1;">Anger</button>
+  <button id="emotionsGenresDisgustBtn" onclick="showGraphEmotionsGenres('Disgust')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #8bc664; border-radius: 5px; flex: 1;">Disgust</button>
+  <button id="emotionsGenresFearBtn" onclick="showGraphEmotionsGenres('Fear')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #b99be5; border-radius: 5px; flex: 1;">Fear</button>
+  <button id="emotionsGenresSurpriseBtn" onclick="showGraphEmotionsGenres('Surprise')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #de9f81; border-radius: 5px; flex: 1;">Surprise</button>
+</div>
+
+<!-- Section des graphiques et des descriptions -->
+<div style="display: flex; height: 800px;">
+
+  <!-- Section des graphiques -->
+  <div style="width: 70%; display: flex; flex-direction: column; gap: 2%;">
+
+    <!-- Premier graphique -->
+    <div id="emotionsGenresGraph" style="flex-grow: 1; height: 200px;"></div>
+
+    <!-- Deuxième graphique -->
+    <div id="emotionsGenresSecondGraph" style="flex-grow: 1; height: 200px;"></div>
+
+  </div>
+
+  <!-- Section de la description -->
+  <div id="emotionsGenresDescription" style="text-align: justify; width: 28%; padding-left: 2%; overflow-y: auto; max-height: 800px;">
+    <p id="emotionsGenresDescriptionText"></p>
+  </div>
+</div>
+
+<script>
+  function showGraphEmotionsGenres(emotion) {
+    var graphContainer = document.getElementById('emotionsGenresGraph');
+    var secondGraphContainer = document.getElementById('emotionsGenresSecondGraph');
+    var descriptionContainer = document.getElementById('emotionsGenresDescription');
+    
+    // Effacer le contenu précédent
+    graphContainer.innerHTML = '';
+    secondGraphContainer.innerHTML = '';  
+    descriptionContainer.innerHTML = '';  // Effacer la description précédente
+    
+    // Charger le premier graphique
+    var graphUrl = "/ada-2024-project-sparkling/plots/" + emotion + "_Distribution_of_Movie_Plots_Across_Genres.html";
+    var iframe = document.createElement('iframe');
+    iframe.src = graphUrl;
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.style.borderRadius= '5px';
+    graphContainer.appendChild(iframe);
+    
+    // Charger le deuxième graphique
+    var secondGraphUrl = "/ada-2024-project-sparkling/plots/" + emotion + "_Distribution_of_Movie_Reviews_Across_Genres.html";
+    var secondIframe = document.createElement('iframe');
+    secondIframe.src = secondGraphUrl;
+    secondIframe.width = "100%";
+    secondIframe.height = "100%";
+    secondIframe.style.borderRadius= '5px';
+    secondGraphContainer.appendChild(secondIframe);
+    
+    // Ajouter la description commune
+    var descriptionText = '';
+    var color = '';
+
+    joy_analysis = "In movie plots, genres like Musical, Romance, and Comedy exhibit high levels of <b>Joy</b>, while darker genres such as Disaster, Horror, Thriller, and Science Fiction display the lowest <b>Joy</b> scores. The same trend is evident in reviews, where Musical maintains the highest <b>Joy</b> score, and Horror, Disaster, and Thriller remain at the bottom. However, the scale differs significantly compared to plots, indicating that reviews generally express a stronger sense of <b>Joy</b> than plots.";
+
+    sadness_analysis = "Movie plots in genres like Romance, Musical, and Drama feature higher <b>Sadness</b> scores, while Horror and Experimental have the lowest. In reviews, <b>Sadness</b> scores are relatively consistent across genres, with only a 2.27% variation between the highest and lowest scores, suggesting a more balanced emotional reaction among reviewers regardless of genre.";
+
+    anger_analysis = "Plots for genres with action-packed themes like Western, Crime, and Action show a significant increase in <b>Anger</b> scores, while Documentary plots have notably lower scores. In reviews, Propaganda stands out with the highest <b>Anger</b> score, possibly reflecting audience disagreement or criticism of these films. Conversely, Animated and Musical genres have the lowest <b>Anger</b> scores, likely due to their lighter themes and younger target audience, which reduce expressions of anger in reviews.";
+
+    disgust_analysis = "Plots with the highest Disgust scores belong to Experimental, Pornographic, and Horror genres. Explicit or unsettling themes in these genres likely drive these elevated scores. Meanwhile, Musical has the lowest Disgust score, which aligns with its joyful and family-friendly nature. In reviews, Pornographic, Horror, and Propaganda genres top the Disgust scale. Explicit content likely influences the scores for the first two, while the audience's ideological disagreement may account for the high Disgust in Propaganda reviews. Musical, again, scores the lowest.";
+
+    fear_analysis = "The highest <b>Fear</b> scores in plots come from Disaster, Fantasy, and Horror genres, which often feature catastrophic events, jump scares, and elements designed to instill fear. Romance and Musical, by contrast, evoke the least fear. The same pattern is observed in reviews, suggesting a strong alignment between plot content and audience reactions for this emotion.";
+
+    surprise_analysis = "Plots in Science Fiction and Teen genres have the highest <b>Surprise</b> scores, likely due to unexpected twists or novel concepts. The lowest <b>Surprise</b> scores are found in War, Historical, and Western genres, which tend to follow more predictable or stereotyped narratives. In reviews, Experimental and Science Fiction genres receive the highest <b>Surprise</b> scores, indicating that audiences find these genres more innovative or unpredictable. Horror, however, has the lowest <b>Surprise</b> score, possibly due to predictable scares.";
+
+    switch (emotion) {
+      case 'Joy':
+        descriptionText = joy_analysis;
+        color = '#f3c35f';
+        break;
+      case 'Sadness':
+        descriptionText = sadness_analysis;
+        color = '#85b8ed';
+        break;
+      case 'Anger':
+        descriptionText = anger_analysis;
+        color = '#e13c29';
+        break;
+      case 'Disgust':
+        descriptionText = disgust_analysis;
+        color = '#8bc664';
+        break;
+      case 'Fear':
+        descriptionText = fear_analysis;
+        color = '#b99be5';
+        break;
+      case 'Surprise':
+        descriptionText = surprise_analysis;
+        color = '#de9f81';
+        break;
+      default:
+        descriptionText = '';
+        color = '#000000';
+    }
+    
+    // Ajouter la description commune
+    var paragraph = document.createElement('p');
+    paragraph.innerHTML = descriptionText;
+    paragraph.style.backgroundColor = color;
+    if (emotion == 'Anger') {
+      paragraph.style.color = '#ffffff';
+    }
+    paragraph.style.padding= '5%';
+    paragraph.style.borderRadius= '5px';
+    descriptionContainer.appendChild(paragraph);
+  }
+  
+</script>

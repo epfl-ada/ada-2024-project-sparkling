@@ -1,0 +1,238 @@
+<style>
+    
+    .slider-container {
+        width: 600px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        margin-top: 2%;
+    }
+    .slider-wrapper {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+    }
+    .slider {
+        -webkit-appearance: none;
+        appearance: none;
+        flex: 1;
+        height: 20px;
+        border-radius: 10px;
+        background: #ddd;
+        outline: none;
+        margin: 0;
+    }
+    .slider::-webkit-slider-runnable-track {
+        height: 20px;
+        border-radius: 10px;
+    }
+    .slider[data-color="joy"]::-webkit-slider-runnable-track {
+        background-color: #f3c35f;
+    }
+    .slider[data-color="anger"]::-webkit-slider-runnable-track {
+        background-color: #e13c29;
+    }
+    .slider[data-color="disgust"]::-webkit-slider-runnable-track {
+        background-color: #8bc664;
+    }
+    .slider[data-color="sadness"]::-webkit-slider-runnable-track {
+        background-color: #85b8ed;
+    }
+    .slider[data-color="fear"]::-webkit-slider-runnable-track {
+        background-color: #b99be5;
+    }
+    .slider[data-color="surprise"]::-webkit-slider-runnable-track {
+        background-color: #de9f81;
+    }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid #ccc;
+        background-color: #fff;
+        background-size: cover;
+        background-position: center;
+        margin-top: -15px;
+    }
+    .slider[data-image="recommender/joy.png"]::-webkit-slider-thumb {
+        background-image: url('recommender/joy.png');
+    }
+    .slider[data-image="recommender/anger.png"]::-webkit-slider-thumb {
+        background-image: url('recommender/anger.png');
+    }
+    .slider[data-image="recommender/disgust.png"]::-webkit-slider-thumb {
+        background-image: url('recommender/disgust.png');
+    }
+    .slider[data-image="recommender/sadness.png"]::-webkit-slider-thumb {
+        background-image: url('recommender/sadness.png');
+    }
+    .slider[data-image="recommender/fear.png"]::-webkit-slider-thumb {
+        background-image: url('recommender/fear.png');
+    }
+    .slider[data-image="recommender/surprise.png"]::-webkit-slider-thumb {
+        background-image: url('recommender/surprise.png');
+    }
+    .value-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 40px;
+        margin-left: 15px;
+        font-weight: bold;
+        font-size: 1em;
+        border-radius: 10px;
+        color: #fff;
+    }
+    #joy-value { background-color: #f3c35f; }
+    #anger-value { background-color: #e13c29; }
+    #disgust-value { background-color: #8bc664; }
+    #sadness-value { background-color: #85b8ed; }
+    #fear-value { background-color: #b99be5; }
+    #surprise-value { background-color: #de9f81; }
+    .button-container {
+        margin-top: 20px;
+    }
+    .button {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .button:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+    .movie-display {
+        margin-top: 20px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+    .movie-item {
+        margin: 0 20px;
+        text-align: center;
+    }
+    .movie-item img {
+        width: 120px;
+        height: auto;
+        display: block;
+        margin: 0 auto 10px;
+    }
+</style>
+
+<div class="slider-container">
+    <!-- Sliders -->
+    <div class="slider-wrapper">
+        <input type="range" id="joy" class="slider" min="0" max="100" step="20" value="0" data-image="recommender/joy.png" data-color="joy">
+        <div class="value-wrapper" id="joy-value">0%</div>
+    </div>
+    <div class="slider-wrapper">
+        <input type="range" id="anger" class="slider" min="0" max="100" step="20" value="0" data-image="recommender/anger.png" data-color="anger">
+        <div class="value-wrapper" id="anger-value">0%</div>
+    </div>
+    <div class="slider-wrapper">
+        <input type="range" id="disgust" class="slider" min="0" max="100" step="20" value="0" data-image="recommender/disgust.png" data-color="disgust">
+        <div class="value-wrapper" id="disgust-value">0%</div>
+    </div>
+    <div class="slider-wrapper">
+        <input type="range" id="sadness" class="slider" min="0" max="100" step="20" value="0" data-image="recommender/sadness.png" data-color="sadness">
+        <div class="value-wrapper" id="sadness-value">0%</div>
+    </div>
+    <div class="slider-wrapper">
+        <input type="range" id="fear" class="slider" min="0" max="100" step="20" value="0" data-image="recommender/fear.png" data-color="fear">
+        <div class="value-wrapper" id="fear-value">0%</div>
+    </div>
+    <div class="slider-wrapper">
+        <input type="range" id="surprise" class="slider" min="0" max="100" step="20" value="0" data-image="recommender/surprise.png" data-color="surprise">
+        <div class="value-wrapper" id="surprise-value">0%</div>
+    </div>
+
+    <!-- Button -->
+    <div class="button-container">
+        <button id="top-movies-button" class="button" disabled>Top Movies</button>
+    </div>
+
+    <!-- Movie Display -->
+    <div id="movie-display" class="movie-display"></div>
+</div>
+
+<script>
+    const API_KEY = '1db74336e95c2d346beb6d216d9231e5';
+    const sliders = document.querySelectorAll('.slider');
+    const topMoviesButton = document.getElementById('top-movies-button');
+    const movieDisplay = document.getElementById('movie-display');
+
+    let possibilities = [];
+
+    // Fetch possibilities.json
+    fetch('recommender/possibilities.json')
+        .then(response => response.json())
+        .then(data => possibilities = data)
+        .catch(err => console.error('Error fetching possibilities.json:', err));
+
+    const updateButtonState = () => {
+        const totalScore = Array.from(sliders).reduce((sum, slider) => sum + parseInt(slider.value), 0);
+        topMoviesButton.disabled = totalScore !== 100;
+    };
+
+    sliders.forEach(slider => {
+        const valueWrapper = document.getElementById(`${slider.id}-value`);
+        slider.addEventListener('input', () => {
+            valueWrapper.textContent = `${slider.value}%`;
+            updateButtonState();
+            movieDisplay.style.display = 'none';
+        });
+    });
+
+    const fetchMoviePoster = async (movieTitle) => {
+        if (movieTitle == "Honey 2") {
+            return "images/honey_2.jpg"
+        }
+        const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieTitle)}`;
+        try {
+            const response = await fetch(searchUrl);
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                const posterPath = data.results[0].poster_path;
+                return posterPath ? `https://image.tmdb.org/t/p/w500${posterPath}` : null;
+            }
+        } catch (error) {
+            console.error(`Error fetching poster for ${movieTitle}:`, error);
+        }
+        return null;
+    };
+
+    topMoviesButton.addEventListener('click', async () => {
+        const currentValues = Array.from(sliders).map(slider => parseInt(slider.value));
+        const match = possibilities.find(possibility => 
+            possibility.possibility.every((val, index) => val === currentValues[index])
+        );
+        if (match) {
+            console.log('Match:', match);
+            movieDisplay.innerHTML = '';
+            for (const movie of match.top_movies) {
+                const posterUrl = await fetchMoviePoster(movie);
+                const movieItem = document.createElement('div');
+                movieItem.className = 'movie-item';
+                const img = document.createElement('img');
+                img.src = posterUrl;
+                img.alt = movie;
+                const title = document.createElement('p');
+                title.textContent = movie;
+                movieItem.appendChild(img);
+                movieItem.appendChild(title);
+                movieDisplay.appendChild(movieItem);
+            }
+            movieDisplay.style.display = 'flex';
+        } else {
+            alert('No matches found.');
+        }
+    });
+</script>

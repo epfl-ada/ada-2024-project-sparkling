@@ -1,0 +1,77 @@
+<div style="display: flex; flex-direction: row; gap: 1%; margin-right: 30%; margin-bottom: 1%;">
+  <button id="joyBtnWordCloud" onclick="showGraphWordCloud('Joy')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #f3c35f; border-radius: 5px; flex: 1;">Joy</button>
+  <button id="sadnessBtnWordCloud" onclick="showGraphWordCloud('Sadness')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #85b8ed; border-radius: 5px; flex: 1;">Sadness</button>
+  <button id="angerBtnWordCloud" onclick="showGraphWordCloud('Anger')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; color: white; background-color: #e13c29; border-radius: 5px; flex: 1;">Anger</button>
+  <button id="disgustBtnWordCloud" onclick="showGraphWordCloud('Disgust')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #8bc664; border-radius: 5px; flex: 1;">Disgust</button>
+  <button id="fearBtnWordCloud" onclick="showGraphWordCloud('Fear')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #b99be5; border-radius: 5px; flex: 1;">Fear</button>
+  <button id="surpriseBtnWordCloud" onclick="showGraphWordCloud('Surprise')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #de9f81; border-radius: 5px; flex: 1;">Surprise</button>
+</div>
+
+<div style="display: flex; justify-content: space-between; height: 500px;">
+  <div id="emotionGraphWordCloud" style="flex-grow: 2; width: 70%;"></div>
+
+  <div id="emotionDescriptionWordCloud" style="text-align: justify; width: 30%; padding-left: 2%; overflow-y: auto; max-height: 500px;">
+    <p id="descriptionTextWordCloud"></p>
+  </div>
+</div>
+
+<script>
+  function showGraphWordCloud(emotionWordCloud) {
+    var graphContainerWordCloud = document.getElementById('emotionGraphWordCloud');
+    var descriptionContainerWordCloud = document.getElementById('emotionDescriptionWordCloud');
+    
+    // Clear previous content
+    graphContainerWordCloud.innerHTML = '';
+    descriptionContainerWordCloud.innerHTML = '';
+    
+    // Load the image based on the selected emotion
+    var graphUrlWordCloud = "/ada-2024-project-sparkling/plots/" + emotionWordCloud + "_Word_Cloud_Personified.png";
+    var imgWordCloud = document.createElement('img');
+    imgWordCloud.src = graphUrlWordCloud;
+    imgWordCloud.style.width = "100%";
+    imgWordCloud.style.height = "100%";
+    imgWordCloud.style.objectFit = "contain"; // Fit the image to the container
+    imgWordCloud.style.borderRadius = '5px';
+    graphContainerWordCloud.appendChild(imgWordCloud);
+    
+    // Add a descriptive paragraph based on the selected emotion
+    var descriptionTextWordCloud = '';
+    var colorWordCloud = '';
+
+    const analysesWordCloud = {
+      Anger: "Plots characterized by anger often revolve around themes of conflict, violence, and tension. Words like 'kill' and 'police' suggest elements of crime or law enforcement entangled in the narrative. 'Father,' 'friend,' and 'man' may point to strained personal relationships as central conflicts. The recurring presence of 'try,' 'make,' and 'return' conveys a sense of action, persistence, and attempts at resolution, while 'time' and 'later' imply a progression of events leading to climactic outcomes.",
+      
+      Disgust: "<b>Disgust</b>-driven plots often explore unsettling or morally challenging scenarios. Words like 'man,' 'woman,' and 'father' point to interpersonal dynamics, often within a familial or societal context. 'House,' 'home,' and 'life' suggest a focus on domestic settings, possibly as stages for conflict or discomfort.",
+      
+      Fear: "Fearful narratives center around suspense, danger, and survival. Words like 'house' and 'escape' indicate scenarios of confinement or flight, while 'kill' and 'police' evoke life-threatening stakes. 'Man,' 'find,' and 'time' suggest individuals uncovering sinister events or racing against time. Words like 'begin' and 'return' convey a cyclical nature to the story, as characters face recurring or escalating threats.",
+      
+      Joy: "Joyful movie plots center on themes of love, relationships, and familial bonds. Words like 'love,' 'friend,' 'family,' and 'father' highlight positive connections and emotional warmth. The frequent appearance of 'new,' 'life,' and 'time' suggests an emphasis on fresh beginnings and the passage of meaningful moments. Together, these words convey a sense of happiness and fulfillment.",
+      
+      Sadness: "Sad plots delve into themes of loss, longing, and introspection. Words like 'life,' 'father,' 'friend,' and 'mother' suggest a focus on family and close relationships. The prevalence of 'home,' 'love,' and 'day' underscores the significance of cherished spaces and moments. 'New' and 'time' reflect transitions and the passage of grief, while 'family' anchors the narrative in deep emotional connections.",
+      
+      Surprise: "<b>Surprise</b>-themed narratives often revolve around unexpected revelations and new beginnings. Words like 'new,' 'time,' and 'day' emphasize fresh starts and pivotal moments. The appearance of 'find,' 'end,' and 'life' suggests uncovering hidden truths or reaching transformative conclusions. 'Friend,' 'man,' and 'love' imply personal relationships as central to the surprise, while 'make' indicates characters taking action to adapt or react."
+    };
+
+
+    descriptionTextWordCloud = analysesWordCloud[emotionWordCloud] || '';
+    colorWordCloud = {
+      Joy: '#f3c35f',
+      Sadness: '#85b8ed',
+      Anger: '#e13c29',
+      Disgust: '#8bc664',
+      Fear: '#b99be5',
+      Surprise: '#de9f81'
+    }[emotionWordCloud] || '#000000';
+    
+    // Add the explanatory text to the page
+    var paragraphWordCloud = document.createElement('p');
+    paragraphWordCloud.innerHTML = descriptionTextWordCloud;
+    paragraphWordCloud.style.backgroundColor = colorWordCloud;
+    if (emotionWordCloud == 'Anger') {
+      paragraphWordCloud.style.color = '#ffffff';
+    }
+    paragraphWordCloud.style.padding = '5%';
+    paragraphWordCloud.style.borderRadius = '5px';
+    descriptionContainerWordCloud.appendChild(paragraphWordCloud);
+  }
+</script>

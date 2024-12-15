@@ -1,0 +1,62 @@
+<style>
+    .heatmap-container {
+        display: flex;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .heatmap-buttons {
+        display: flex;
+        flex-direction: column;
+        margin-right: 20px;
+    }
+    .heatmap-buttons button {
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        font-size: 14px;
+    }
+    .heatmap-buttons button:hover {
+        background-color: #0056b3;
+    }
+    .heatmap-buttons button.active {
+        background-color: #004080;
+    }
+</style>
+
+<div class="heatmap-container">
+    <div class="heatmap-buttons">
+        <button onclick="showHeatmapDescription('War', this)">War</button>
+        <button onclick="showHeatmapDescription('Disaster', this)">Disaster</button>
+        <button onclick="showHeatmapDescription('Drama', this)">Drama</button>
+        <button onclick="showHeatmapDescription('Comedy', this)">Comedy</button>
+        <button onclick="showHeatmapDescription('Romance', this)">Romance</button>
+    </div>
+    <div style="text-align: justify;" class="heatmap-description" id="heatmap-description">
+        
+    </div>
+</div>
+
+<script>
+    const heatmapDescriptions = {
+        War: "The high probability of transitioning <b>from surprise to fear</b>, for instance, is entirely expected. Sudden events like ambushes or explosions are staples of war movies, and they almost inevitably lead to fear as characters react to the unexpected. Similarly, <b>fear</b> often persists, reflected in the transition <b>from fear to fear</b>, or gives way to sadness, as the weight of loss and devastation takes hold. <b>Anger</b> also plays a significant role, frequently shifting to <b>fear or sadness</b>. This progression captures the raw intensity of emotions in conflict, where <b>anger</b> injustice or betrayal can quickly dissolve into the harsh reality of the battlefield.",
+        Disaster: "The patterns here align beautifully with the emotional intensity and unpredictability of disaster narratives. The high transition from <b>fear to fear</b> makes perfect sense. In disaster films, fear is often the dominant emotion, with characters facing constant threats and uncertainties. This persistence of fear reflects the ongoing tension that keeps audiences on edge. Similarly, <b>surprise transitions to fear</b> are natural, as unexpected catastrophic events like earthquakes or explosions are central to the genre. The transition <b>from sadness to fear</b> and <b>disgust to fear</b> also feels logical. <b>Sadness</b>, often evoked by loss, merges with fear as characters confront the harsh realities of survival. <b>Anger to disgust</b> reflects the frustration and moral outrage that often arise in disaster films.<br>Interestingly, the transition from <b>sadness to joy</b> stands out. This captures those rare but powerful moments of relief or triumph. These transitions provide emotional depth and balance, giving audiences a sense of hope amid the chaos.",
+        Drama: "The high probability of transitioning <b>from anger to sadness</b> is a hallmark of dramas. <b>Anger</b>, often rooted in conflict or betrayal, frequently shifts to sadness as characters come to terms with loss or regret. The prominence of <b>surprise to sadness</b> and <b>surprise to fear</b> also stands out because dramas often feature unexpected revelations or events that evoke fear or sorrow, reflecting the unpredictable nature of life and relationships. Additionally, <b>disgust transitions to sadness</b> emphasize the moral and ethical dilemmas often explored in the genre, where disillusionment leads to deeper emotional pain. In this type of movie, characters navigate a spectrum of feelings, creating stories that resonate deeply with audiences through their authenticity and emotional truth.",
+        Comedy: "The transition <b>from surprise to joy</b> and <b>sadness to joy</b> stands out, reflecting how comedy often turns unexpected or gloomy moments into laughter and relief. This ability to take the audience from low to high emotions is a signature strength of the genre, creating its characteristic charm. <b>Surprise to surprise</b> and <b>fear to fear</b> highlight the genre’s use of suspense and exaggerated situations to keep audiences engaged. These transitions mirror the unexpected twists and heightened stakes that are typical in comedic storytelling. And finally, transitions between <b>joy and sadness</b> illustrate the emotional balance in comedy, where moments of happiness are interspersed with small dips to keep the story engaging.",
+        Romance: "One of the most striking transitions is <b>from sadness to joy</b>, which encapsulates the uplifting moments that are so integral to romance. These transitions often represent reconciliation, declarations of love, or happy endings, where sadness transforms into pure happiness. Similarly, <b>joy to joy</b> reflects the feel-good nature of romance films, where moments of happiness linger. <b>Surprise to sadness</b> and <b>sadness to sadness</b> highlight the dramatic turns in romance, often involving heartbreak, misunderstandings, or longing. These transitions reflect the genre’s focus on emotional vulnerability and the challenges of love. Aaah we all know this! <b>Anger transitions to sadness</b> and <b>disgust transitions to sadness</b> emphasize the emotional complexity of relationships, where conflicts and disappointments often lead to moments of reflection and emotional depth…"
+    };
+
+    function showHeatmapDescription(category, button) {
+        const heatmapDescriptionDiv = document.getElementById('heatmap-description');
+        heatmapDescriptionDiv.innerHTML = heatmapDescriptions[category];
+        const allHeatmapButtons = document.querySelectorAll('.heatmap-buttons button');
+        allHeatmapButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    }
+    
+</script>

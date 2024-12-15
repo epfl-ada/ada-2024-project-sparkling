@@ -1,0 +1,38 @@
+<style>
+    .container-holidays {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 2rem;
+        margin-top: 2%;
+    }
+
+    .image-container-holidays {
+        flex-shrink: 0;
+        max-width: 20%;
+    }
+
+    .image-container-holidays img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.2s;
+    }
+
+    .image-container-holidays img:hover {
+        transform: scale(1.05);
+    }
+
+    .paragraph-container-holidays {
+        flex: 1;
+    }
+</style>
+
+<div class="container-holidays">
+  <div class="image-container-holidays">
+      <img src="images/emotions_in_plane.jpg" alt="Emotions in a plane">
+  </div>
+  <div class="paragraph-container-holidays">
+    <p style="text-align: justify;">You know what could be even more sensational than travelling through time? Taking a trip through time all over the world! For this, our experts mapped each movie to the countries they were released in as well as to its decade and calculated the most dominant emotion grouping by decade and country. So join us for this wonderful adventure!</p>
+  </div>
+</div>

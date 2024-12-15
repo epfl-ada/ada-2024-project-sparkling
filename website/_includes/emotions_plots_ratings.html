@@ -1,0 +1,119 @@
+<!-- Section des boutons -->
+<div style="display: flex; flex-direction: row; gap: 1%; margin-right: 30%; margin-bottom: 1%;">
+  <button id="joyBtnEmotionRating" onclick="showGraphEmotionRatings('Joy')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #f3c35f; border-radius: 5px; flex: 1;">Joy</button>
+  <button id="sadnessBtnEmotionRating" onclick="showGraphEmotionRatings('Sadness')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #85b8ed; border-radius: 5px; flex: 1;">Sadness</button>
+  <button id="angerBtnEmotionRating" onclick="showGraphEmotionRatings('Anger')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; color: white; background-color: #e13c29; border-radius: 5px; flex: 1;">Anger</button>
+  <button id="disgustBtnEmotionRating" onclick="showGraphEmotionRatings('Disgust')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #8bc664; border-radius: 5px; flex: 1;">Disgust</button>
+  <button id="fearBtnEmotionRating" onclick="showGraphEmotionRatings('Fear')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #b99be5; border-radius: 5px; flex: 1;">Fear</button>
+  <button id="surpriseBtnEmotionRating" onclick="showGraphEmotionRatings('Surprise')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #de9f81; border-radius: 5px; flex: 1;">Surprise</button>
+</div>
+
+<!-- Section des graphiques et des descriptions -->
+<div style="display: flex; height: 800px;">
+
+  <!-- Section des graphiques -->
+  <div style="width: 70%; display: flex; flex-direction: column; gap: 2%;">
+
+    <!-- Premier graphique -->
+    <div id="emotionGraphEmotionRating" style="flex-grow: 1; height: 200px;"></div>
+
+    <!-- Deuxième graphique -->
+    <div id="secondGraphEmotionRating" style="flex-grow: 1; height: 200px;"></div>
+
+  </div>
+
+  <!-- Section de la description -->
+  <div id="emotionDescriptionEmotionRating" style="text-align: justify; width: 28%; padding-left: 2%; overflow-y: auto; max-height: 800px;">
+    <p id="descriptionTextEmotionRating"></p>
+  </div>
+
+</div>
+
+<script>
+  function showGraphEmotionRatings(emotionRating) {
+    var graphContainerEmotionRating = document.getElementById('emotionGraphEmotionRating');
+    var secondGraphContainerEmotionRating = document.getElementById('secondGraphEmotionRating');
+    var descriptionContainerEmotionRating = document.getElementById('emotionDescriptionEmotionRating');
+    
+    // Effacer le contenu précédent
+    graphContainerEmotionRating.innerHTML = '';
+    secondGraphContainerEmotionRating.innerHTML = '';  
+    descriptionContainerEmotionRating.innerHTML = '';  // Effacer la description précédente
+    
+    // Charger le premier graphique
+    var graphUrlEmotionRating = "/ada-2024-project-sparkling/plots/" + emotionRating + "_Distribution_of_Movie_Plots_by_Average_Movie_Rating_Bins.html";
+    var iframeEmotionRating = document.createElement('iframe');
+    iframeEmotionRating.src = graphUrlEmotionRating;
+    iframeEmotionRating.width = "100%";
+    iframeEmotionRating.height = "100%";
+    iframeEmotionRating.style.borderRadius = '5px';
+    graphContainerEmotionRating.appendChild(iframeEmotionRating);
+    
+    // Charger le deuxième graphique
+    var secondGraphUrlEmotionRating = "/ada-2024-project-sparkling/plots/" + emotionRating + "_Distribution_of_Movie_Reviews_by_Average_Movie_Rating_Bins.html";
+    var secondIframeEmotionRating = document.createElement('iframe');
+    secondIframeEmotionRating.src = secondGraphUrlEmotionRating;
+    secondIframeEmotionRating.width = "100%";
+    secondIframeEmotionRating.height = "100%";
+    secondIframeEmotionRating.style.borderRadius = '5px';
+    secondGraphContainerEmotionRating.appendChild(secondIframeEmotionRating);
+    
+    // Ajouter la description commune
+    var descriptionTextEmotionRating = '';
+    var colorEmotionRating = '';
+    
+    var joyAnalysisEmotionRating = "For <b>Joy</b>, we observe an interesting trend: movies with the most joyful plots tend to fall into two categories—either very poorly rated films (1–2/10) or exceptionally well-rated ones (9–10/10). In contrast, for reviews, joy exhibits a linear increase with the movie rating, suggesting that audiences associate higher joy with better-rated films.";
+
+    var sadnessAnalysisEmotionRating = "Regarding <b>Sadness</b>, its distribution in movie plots is fairly consistent, with a slight increase in films rated between 6 and 9/10. As for reviews, sadness remains relatively stable across ratings, though it noticeably drops for highly rated movies with scores above 9/10.";
+
+    var angerAnalysisEmotionRating = "<b>Anger</b> shows a notable trend: highly-rated movies (>9/10) have higher levels of anger in their plots. On the other hand, reviews demonstrate an inverse relationship—movies with better ratings tend to elicit less anger in their reviews.";
+
+    var disgustAnalysisEmotionRating = "For <b>Disgust</b>, its presence in plots remains fairly stable across all rating levels. However, in reviews, a clear trend emerges: the better the movie rating, the less disgust is expressed in the reviews.";
+
+    var fearAnalysisEmotionRating = "<b>Fear</b> exhibits a peak in plots of movies rated 3–4/10, while the least fearful plots are associated with movies rated 9 and above. The same trend is observed in reviews, where higher-rated movies show lower levels of fear.";
+
+    var surpriseAnalysisEmotionRating = "For <b>Surprise</b>, plots reveal an inverse relationship: the better a movie is rated, the less surprise is conveyed in its plot. This intriguing observation could hint at a key to a film’s success—avoiding excessive surprise in the storyline. In reviews, however, the trend is reversed, with movies rated 9/10 or higher exhibiting higher levels of surprise compared to others.";
+
+    switch (emotionRating) {
+      case 'Joy':
+        descriptionTextEmotionRating = joyAnalysisEmotionRating;
+        colorEmotionRating = '#f3c35f';
+        break;
+      case 'Sadness':
+        descriptionTextEmotionRating = sadnessAnalysisEmotionRating;
+        colorEmotionRating = '#85b8ed';
+        break;
+      case 'Anger':
+        descriptionTextEmotionRating = angerAnalysisEmotionRating;
+        colorEmotionRating = '#e13c29';
+        break;
+      case 'Disgust':
+        descriptionTextEmotionRating = disgustAnalysisEmotionRating;
+        colorEmotionRating = '#8bc664';
+        break;
+      case 'Fear':
+        descriptionTextEmotionRating = fearAnalysisEmotionRating;
+        colorEmotionRating = '#b99be5';
+        break;
+      case 'Surprise':
+        descriptionTextEmotionRating = surpriseAnalysisEmotionRating;
+        colorEmotionRating = '#de9f81';
+        break;
+      default:
+        descriptionTextEmotionRating = '';
+        colorEmotionRating = '#000000';
+    }
+    
+    // Ajouter la description commune
+    var paragraphEmotionRating = document.createElement('p');
+    paragraphEmotionRating.innerHTML = descriptionTextEmotionRating;
+    paragraphEmotionRating.style.backgroundColor = colorEmotionRating;
+    if (emotionRating == 'Anger') {
+      paragraphEmotionRating.style.color = '#ffffff';
+    }
+    paragraphEmotionRating.style.padding = '5%';
+    paragraphEmotionRating.style.borderRadius = '5px';
+    descriptionContainerEmotionRating.appendChild(paragraphEmotionRating);
+  }
+  
+</script>

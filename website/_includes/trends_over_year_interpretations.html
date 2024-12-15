@@ -1,0 +1,68 @@
+<style>
+    .container-trends-over-year {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .buttons-trends-over-year {
+        display: flex;
+        flex-direction: row;
+        gap:1%;
+    }
+    .buttons-trends-over-year button {
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        font-size: 14px;
+    }
+    .buttons-trends-over-year button:hover {
+        background-color: #0056b3;
+    }
+    .buttons-trends-over-year button.active {
+        background-color: #004080;
+    }
+</style>
+
+<div class="container-trends-over-year">
+    <div class="buttons-trends-over-year">
+        <button class="active" onclick="showTrendsOverYearInterpretation('January', this)">January</button>
+        <button onclick="showTrendsOverYearInterpretation('February', this)">February</button>
+        <button onclick="showTrendsOverYearInterpretation('March', this)">March</button>
+        <button onclick="showTrendsOverYearInterpretation('April', this)">April</button>
+        <button onclick="showTrendsOverYearInterpretation('August_September', this)">August-September</button>
+        <button onclick="showTrendsOverYearInterpretation('October', this)">October</button>
+        <button onclick="showTrendsOverYearInterpretation('November', this)">November</button>
+        <button onclick="showTrendsOverYearInterpretation('December', this)">December</button>
+    </div>
+    <div style="text-align: justify;" class="description-trends-over-year" id="description-trends-over-year">
+        <b>Joy</b> shows a significant increase from December to January in the movie slots. Is this really surprising with the festive spirit of the New Year?
+    </div>
+</div>
+
+<script>
+    const descriptionsTrendsOverYear = {
+        January: "<b>Joy</b> shows a significant increase from December to January in the movie slots. Is this really surprising with the festive spirit of the New Year?",
+        February: "In February, it’s <b>Disgust</b> and Sadness that are climbing, no doubt due to the complex stories of Valentine’s Day, where love isn’t always a fairytale. We all know : love can be as complicated as the feelings it evokes.",
+        March: "When March arrives, <b>Surprise</b> and <b>Joy</b> take over, marking the arrival of spring and renewed and cheerful storylines.",
+        April: "In April, <b>Fear</b> and <b>Anger</b> leap forward, coinciding with Easter, a time when tense, mysterious tales seduce audiences.",
+        August_September: "In August-September, it’s <b>Disgust</b> that stands out, with a little sadness too, probably influenced by stories dealing with the sometimes brutal realities of the end of summer and the return to school.",
+        October: "Most intriguing of all is the rise of <b>Surprise</b> and <b>Fear</b> in October, just in time for Halloween. Coincidence? Certainly not, since these two emotions are known to become the mainstays of the dark and scary stories that dominate screens around this time.",
+        November: "In November, Thanksgiving brings <b>Joy</b> back to the screen, capturing the spirit of gratitude and celebration.",
+        December: "Finally, in December, <b>Surprise</b> dominates once again, with a touch of joy, brought on by the magic of Christmas and the unexpected endings that light up the season."
+    };
+
+    function showTrendsOverYearInterpretation(category, button) {
+        const descriptionDiv = document.getElementById('description-trends-over-year');
+        descriptionDiv.innerHTML = descriptionsTrendsOverYear[category];
+        const allButtons = document.querySelectorAll('.buttons-trends-over-year button');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    }
+</script>

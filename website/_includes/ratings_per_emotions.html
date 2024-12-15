@@ -1,0 +1,36 @@
+<style>
+    .container-ratings_per_emotion {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+  
+    .iframe-container-ratings_per_emotion {
+        flex: 0 0 60%;
+        width: 400px;
+        height: 400px;
+    }
+  
+    .paragraph-container-ratings_per_emotion {
+        flex: 0 0 38%;
+        margin-left: 2%;
+        width: 400px;
+        height: auto;
+    }
+  
+    .iframe-container-ratings_per_emotion iframe {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+  </style>
+  
+  <div class="container-ratings_per_emotion">
+    <div class="iframe-container-ratings_per_emotion">
+        <iframe src="plots/ratings_boxplot_final.html"></iframe>
+    </div>
+    <div class="paragraph-container-ratings_per_emotion">
+        <p style="text-align: justify;">This analysis highlights how promoted emotions influence movie ratings in unique ways. <b>Joy</b>, known for its universal appeal and uplifting effect, consistently resonates with audiences, leading to higher ratings overall. <b>Joy</b> comes first when it comes to high ratings, with a median close to 10, although it has some low-rating outliers.<br>On the other hand, disgust, tied to discomfort and negative reactions, tends to result in lower ratings, reflecting its more repulsive nature. <b>Disgust</b>, as expected, comes last with a median of 5 and a third quartile of 7. These findings emphasize the powerful role emotions play in shaping the audience's perception and evaluation of films.</p>
+    </div>
+  </div>

@@ -1,0 +1,35 @@
+<style>
+    .container-pizza-graph {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 3%;
+        margin-bottom: 4%;
+    }
+
+    .iframe-container-pizza-graph {
+        flex: 0 0 68%;
+        height: 400px;
+    }
+
+    .iframe-container-pizza-graph iframe {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .text-container-pizza-graph {
+        flex: 0 0 30%;
+        margin-left: 2%;
+    }
+</style>
+
+<div class="container-pizza-graph">
+    <div class="iframe-container-pizza-graph">
+        <iframe src="plots/3d_emotion_actor_movie_review.html"></iframe>
+    </div>
+    <div class="text-container-pizza-graph">
+        <p style="text-align: justify;">Wow! A slice of pizza! 😋 As we saw previously, joy is the most dominant emotion across all the reviews emotions. As we can see, this is also reflected here. This time, actors associated with anger and surprise are mixed with the others emotions. This can be explained by their number, which is unimportant compared to other emotions. The PCA algorithm then gives less importance to this particular axis for dimensionality reduction.</p>
+    </div>
+</div>

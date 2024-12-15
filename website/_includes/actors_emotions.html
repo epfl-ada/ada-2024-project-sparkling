@@ -1,0 +1,227 @@
+<style>
+  .card {
+    width: 600px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 20px;
+    text-align: center;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .card-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .card-header button.active {
+    background-color: #004080;
+  }
+  .card-header button:hover {
+    background-color: #0056b3;
+  }
+  .emotions {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .emotions button {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    color: black;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .emotions button:hover {
+    transform: scale(1.05);
+  }
+  .actor-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .actor-image {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    margin: 0 auto 20px;
+    border-radius: 5px;
+  }
+  .card-content p {
+    margin: 0;
+    font-size: 16px;
+  }
+  .read-more-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  .read-more-link:hover {
+    color: #0056b3;
+  }
+</style>
+
+
+
+<div class="card">
+  <div class="card-header">
+    <button data-mode="plots" class="active">Plots</button>
+    <button data-mode="reviews">Reviews</button>
+  </div>
+  <div class="emotions">
+    <button id="joyBtn" data-emotion="joy" style="background-color: #f3c35f;">Joy</button>
+    <button id="sadnessBtn" data-emotion="sadness" style="background-color: #85b8ed;">Sadness</button>
+    <button id="angerBtn" data-emotion="anger" style="background-color: #e13c29;">Anger</button>
+    <button id="disgustBtn" data-emotion="disgust" style="background-color: #8bc664;">Disgust</button>
+    <button id="fearBtn" data-emotion="fear" style="background-color: #b99be5;">Fear</button>
+    <button id="surpriseBtn" data-emotion="surprise" style="background-color: #de9f81;">Surprise</button>
+  </div>
+  <div class="card-content">
+    <div class="actor-name" id="actor-name">Actor Name</div>
+    <img id="actor-image" class="actor-image" src="" alt="Actor Image">
+    <p id="card-text"></p>
+    <a id="read-more" href="#" target="_blank" class="read-more-link">Read more</a>
+  </div>
+</div>
+
+
+
+<script>
+  // Strings for each case
+  const contentData = {
+  plots: {
+    joy: {
+      text: "With 19.80 %, Eugene Levy is the actor in our top that has the most joy their in movie plots.<br><br>Eugene Levy (born December 17, 1946) is a Canadian actor and comedian. Known for portraying flustered and unconventional figures.",
+      name: "Eugene Levy",
+      image: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Eugene_Levy_2011.jpg",
+      link: "https://en.wikipedia.org/wiki/Eugene_Levy"
+    },
+    sadness: {
+      text: "Bette Davis is the actress in our top that has the most sadness in both their movie plots and reviews, with respectively 26.55 % and 15.57 %.<br><br>Ruth Elizabeth “Bette” Davis (April 5, 1908 - October 6, 1989) was an American actress of film, television, and theater. Regarded as one of the greatest actresses in Hollywood history, she was noted for her willingness to play unsympathetic, sardonic characters and was known for her performances in a range of film genres, from contemporary crime melodramas to historical and period films and occasional comedies, although her greatest successes were her roles in romantic dramas.",
+      name: "Bette Davis",
+      image: "https://upload.wikimedia.org/wikipedia/commons/4/46/BetteDavis1935.jpg",
+      link: "https://en.wikipedia.org/wiki/Bette_Davis"
+    },
+    anger: {
+      text: "With 29.15 %, Burt Lancaster is the actor in our top that has the most anger their in movie plots.<br><br>Burton Stephen Lancaster (November 2, 1913 - October 20, 1994) was an American actor. Initially known for playing tough guys with a tender heart, he went on to achieve success with more complex and challenging roles over a 45-year career in films and television series.",
+      name: "Burt Lancaster",
+      image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Burt_Lancaster_-_publicity_1947.JPG",
+      link: "https://en.wikipedia.org/wiki/Burt_Lancaster"
+    },
+    disgust: {
+      text: "With 21.85 %, Harvey Keitel is the actor in our top that has the most disgust their in movie plots.<br><br>Harvey Keitel (born May 13, 1939) is an American actor known for his portrayal of morally ambiguous and “tough guy” characters. He rose to prominence during the New Hollywood movement, and has held a long-running association with director Martin Scorsese.",
+      name: "Harvey Keitel",
+      image: "https://upload.wikimedia.org/wikipedia/commons/f/f5/Harvey_Keitel_Cannes_2015.jpg",
+      link: "https://en.wikipedia.org/wiki/Harvey_Keitel"
+    },
+    fear: {
+      text: "With 23.42 %, Christopher Lee is the actor in our top that has the most fear their in movie plots.<br><br>Sir Christopher Frank Carandini Lee (27 May 1922 – 7 June 2015) was an English actor and singer. In a career spanning more than sixty years, Lee became known as an actor with a deep and commanding voice who often portrayed villains in horror and franchise films.",
+      name: "Christopher Lee",
+      image: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Christopher_Lee_2009.jpg",
+      link: "https://en.wikipedia.org/wiki/Christopher_Lee"
+    },
+    surprise: {
+      text: "Tom Hanks is the actor in our top that has the most surprise in both their movie plots and reviews, with respectively 12.40 % and 18.05 %.<br><br>Thomas Jeffrey Hanks (born July 9, 1956) is an American actor and filmmaker. Known for both his comedic and dramatic roles, he is one of the most popular and recognizable film stars worldwide, and is regarded as an American cultural icon. Hanks is ranked as the fifth-highest-grossing American film actor.",
+      name: "Tom Hanks",
+      image: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Tom_Hanks_TIFF_2019.jpg",
+      link: "https://en.wikipedia.org/wiki/Tom_Hanks"
+    },
+  },
+  reviews: {
+    joy: {
+      text: "With 43.64 %, Paresh Rawal is the actor in our top that has the most joy in their movie reviews.<br><br>Paresh Rawal (born 30 May 1955) is an Indian actor, comedian, film producer and politician known for his works primarily in Hindi films. He has appeared in over 240 films.",
+      name: "Paresh Rawal",
+      image: "https://upload.wikimedia.org/wikipedia/commons/c/c0/Paresh_Rawal_still4.jpg",
+      link: "https://en.wikipedia.org/wiki/Paresh_Rawal"
+    },
+    sadness: {
+      text: "Bette Davis is the actress in our top that has the most sadness in both their movie plots and reviews, with respectively 26.55 % and 15.57 %.<br><br>Ruth Elizabeth “Bette” Davis (April 5, 1908 - October 6, 1989) was an American actress of film, television, and theater. Regarded as one of the greatest actresses in Hollywood history, she was noted for her willingness to play unsympathetic, sardonic characters and was known for her performances in a range of film genres, from contemporary crime melodramas to historical and period films and occasional comedies, although her greatest successes were her roles in romantic dramas.",
+      name: "Bette Davis",
+      image: "https://upload.wikimedia.org/wikipedia/commons/4/46/BetteDavis1935.jpg",
+      link: "https://en.wikipedia.org/wiki/Bette_Davis"
+    },
+    anger: {
+      text: "With 11.83 %, Richard Widmark is the actor in our top that has the most anger their in movie reviews.<br><br>Richard Weedt Widmark (December 26, 1914 – March 24, 2008) was an American film, stage, and television actor and producer.<br>He was nominated for an Academy Award for his role as the villainous Tommy Udo in his debut film, Kiss of Death (1947), for which he also won the Golden Globe Award for Most Promising Newcomer. Early in his career, Widmark was typecast in similar villainous or anti-hero roles in films noir, but he later branched out into more heroic leading and supporting roles in Westerns, mainstream dramas, and horror films among others.",
+      name: "Richard Widmark",
+      image: "https://upload.wikimedia.org/wikipedia/en/6/68/Richard_Widmark_-_1973.jpg",
+      link: "https://en.wikipedia.org/wiki/Richard_Widmark"
+    },
+    disgust: {
+      text: "With 18.92 %, John Hurt is the actor in our top that has the most disgust in their movie reviews.<br><br>Sir John Vincent Hurt (22 January 1940 – 25 January 2017) was an English actor whose career spanned over five decades. He was regarded as one of Britain’s finest actors. Director David Lynch described him as “simply the greatest actor in the world”. He possessed what was described as the “most distinctive voice in Britain”.",
+      name: "John Hurt",
+      image: "https://upload.wikimedia.org/wikipedia/commons/8/82/John_Hurt_at_the_2009_Tribeca_Film_Festival.jpg",
+      link: "https://en.wikipedia.org/wiki/John_Hurt"
+    },
+    fear: {
+      text: "With 18.73 %, Vincent Price is the actor in our top that has the most fear in their movie reviews.<br><br>Vincent Leonard Price Jr. (May 27, 1911 – October 25, 1993) was an American actor. He was known for his work in the horror film genre, mostly portraying villains. He appeared on stage, television, and radio, and in more than 100 films. Price has two stars on the Hollywood Walk of Fame, one for motion pictures and one for television.",
+      name: "Vincent Price",
+      image: "https://upload.wikimedia.org/wikipedia/commons/6/65/Vincent_Price_in_House_on_Haunted_Hill_%28cropped%29.jpg",
+      link: "https://en.wikipedia.org/wiki/Vincent_Price"
+    },
+    surprise: {
+      text: "Tom Hanks is the actor in our top that has the most surprise in both their movie plots and reviews, with respectively 12.40 % and 18.05 %.<br><br>Thomas Jeffrey Hanks (born July 9, 1956) is an American actor and filmmaker. Known for both his comedic and dramatic roles, he is one of the most popular and recognizable film stars worldwide, and is regarded as an American cultural icon. Hanks is ranked as the fifth-highest-grossing American film actor.",
+      name: "Tom Hanks",
+      image: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Tom_Hanks_TIFF_2019.jpg",
+      link: "https://en.wikipedia.org/wiki/Tom_Hanks"
+    },
+  }
+  };
+
+  const actorName = document.getElementById('actor-name');
+  const actorImage = document.getElementById('actor-image');
+  const cardText = document.getElementById('card-text');
+  const readMoreLink = document.getElementById('read-more');
+  const modeButtons = document.querySelectorAll('.card-header button');
+  const emotionButtons = document.querySelectorAll('.emotions button');
+
+  let currentMode = 'plots';
+  let currentEmotion = 'joy';
+
+  // Update card content
+  const updateCardContent = () => {
+  const { text, name, image, link } = contentData[currentMode][currentEmotion];
+  cardText.innerHTML = text;
+  actorName.textContent = name;
+  actorImage.src = image;
+  readMoreLink.href = link;
+  };
+
+  // Add event listeners for modes
+  modeButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    modeButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    currentMode = button.dataset.mode;
+    updateCardContent();
+  });
+  });
+
+  // Add event listeners for emotions
+  emotionButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    emotionButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    currentEmotion = button.dataset.emotion;
+    updateCardContent();
+  });
+  });
+
+  // Initialize with default values
+  updateCardContent();
+</script>

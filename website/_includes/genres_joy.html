@@ -1,0 +1,45 @@
+<style>
+    .container-genres-joy {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .iframe-container-genres-joy {
+        flex: 0 0 70%;
+        width: 300px;
+        height: 700px;
+    }
+
+    .image-container-genres-joy {
+        flex: 0 0 30%;
+        width: 400px;
+        height: auto;
+    }
+
+    .iframe-container-genres-joy iframe {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .image-container-genres-joy img {
+        width: 100%;
+        height: 100%;
+        transition: transform 0.2s;
+    }
+
+    .image-container-genres-joy img:hover {
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="container-genres-joy">
+  <div class="image-container-genres-joy">
+      <img src="images/joy_movie_genres.png" alt="Joy saying that's much better">
+  </div>
+  <div class="iframe-container-genres-joy">
+    <iframe src="plots/genres_proportions_True.html"></iframe>
+</div>
+</div>

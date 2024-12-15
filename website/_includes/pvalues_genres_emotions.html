@@ -1,0 +1,65 @@
+<style>
+    .container-pvalues-genres-emotions {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .buttons-pvalues-genres-emotions {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 20px;
+    }
+    .buttons-pvalues-genres-emotions button {
+        margin: 0 10px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        font-size: 14px;
+    }
+    .buttons-pvalues-genres-emotions button:hover {
+        background-color: #0056b3;
+    }
+    .buttons-pvalues-genres-emotions button.active {
+        background-color: #004080;
+    }
+    .description-pvalues-genres-emotions {
+        text-align: justify;
+    }
+</style>
+
+<div class="container-pvalues-genres-emotions">
+    <div class="buttons-pvalues-genres-emotions">
+        <button class="active" onclick="showPvaluesGenresEmotionsInterpretation('ExperimentalTeen', this)">Experimental / Teen</button>
+        <button onclick="showPvaluesGenresEmotionsInterpretation('ScienceFiction', this)">Science Fiction</button>
+        <button onclick="showPvaluesGenresEmotionsInterpretation('Historical', this)">Historical</button>
+        <button onclick="showPvaluesGenresEmotionsInterpretation('Propaganda', this)">Propaganda</button>
+        <button onclick="showPvaluesGenresEmotionsInterpretation('War', this)">War</button>
+    </div>
+    <div class="description-pvalues-genres-emotions" id="description-pvalues-genres-emotions">
+        For instance, experimental and teen genres show no correlation with fear. After all, who would expect terror in enigmatic works or in an adolescent story centered on daily concerns?
+    </div>
+</div>
+
+<script>
+    const descriptionsPvaluesGenresEmotions = {
+        ExperimentalTeen: "For instance, experimental and teen genres show no correlation with fear. After all, who would expect terror in enigmatic works or in an adolescent story centered on daily concerns?",
+        ScienceFiction: "Science fiction, on the other hand, has nothing to do with anger, preferring to marvel at distant and futuristic galaxies or utopias.",
+        Historical: "Historical films lack both disgust and anger, these absences were expected, as these emotions are often felt by viewers but rarely explicitly expressed in film plots.",
+        Propaganda: "The propaganda genre has only a very weak but significant link with disgust, reflecting its informative and manipulative intent rather than emotional engagement.",
+        War: "War, on the other hand, shows no correlation with sadness, anger, or disgust, instead favoring fear and surprise to convey the intensity of conflicts, even though the absent emotions are widely recognized as ones deeply felt by audiences when watching this type of film."
+    };
+
+    function showPvaluesGenresEmotionsInterpretation(category, button) {
+        const descriptionDiv = document.getElementById('description-pvalues-genres-emotions');
+        descriptionDiv.innerHTML = descriptionsPvaluesGenresEmotions[category];
+        const allButtons = document.querySelectorAll('.buttons-pvalues-genres-emotions button');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    }
+</script>

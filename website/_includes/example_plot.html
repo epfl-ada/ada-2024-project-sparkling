@@ -1,0 +1,82 @@
+<style>
+    .emotion_plot {
+        display: inline;
+        border-radius: 5px;
+        padding-top: 0.2%;
+        padding-bottom: 0.2%;
+    }
+    .joy_plot { background-color: #f3c35f; }
+    .anger_plot { background-color: #e13c29; color: #fff; }
+    .disgust_plot { background-color: #8bc664; }
+    .sadness_plot { background-color: #85b8ed; }
+    .fear_plot { background-color: #b99be5; }
+    #plot-container {
+        display: none;
+        text-align: justify;
+    }
+    .toggle-plot-btn{
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        font-size: 16px;
+        padding: 10px 15px;
+    }
+    .toggle-plot-btn:hover {
+        background-color: #0056b3;
+    }
+    .read-more-link-plot {
+    display: inline-block;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  .read-more-link-plot:hover {
+    color: #0056b3;
+  }
+</style>
+
+<button class = "toggle-plot-btn" id="toggle-plot">Show the Inside Out movie plot </button>
+<div id="plot-container">
+    <p>
+        <span class="emotion_plot disgust_plot">In the mind of a young girl named Riley Andersen are five personified emotions that influence her actions: <b>Joy</b>, <b>Sadness</b>, <b>Fear</b>, <b>Disgust</b>, and <b>Anger</b>.</span>
+        Riley's experiences become memories that are stored as colored orbs and are sent into long-term memory each night.
+        The aspects of the five most important 'core memories' within her personality take the form of five floating islands.
+        <span class="emotion_plot disgust_plot"><b>Joy</b> acts as the leader and tries to limit <b>Sadness</b>'s influence, perceiving her as an unnecessary burden for Riley.</span>
+        <span class="emotion_plot joy_plot">At age 11, Riley moves from Minnesota to San Francisco for her father's new job.</span>
+        <span class="emotion_plot sadness_plot">On Riley's first day at her new school, <b>Sadness</b> retroactively saddens joyous memories, causing Riley to cry in front of her class.</span>
+        <span class="emotion_plot sadness_plot">This creates Riley's first sad core memory.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b> tries to dispose of the memory using a pneumatic tube but knocks loose the other core memories during a struggle with <b>Sadness</b>, disabling the personality islands.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b>, <b>Sadness</b>, and the core memories are sucked out of Headquarters.</span>
+        <span class="emotion_plot disgust_plot">In the absence of <b>Joy</b> and <b>Sadness</b>, <b>Anger</b>, <b>Fear</b>, and <b>Disgust</b> try to make happy core memories, but the results are disastrous, distancing Riley from her parents, peers, and hobbies.</span>
+        <span class="emotion_plot anger_plot">Without the core memories, <b>Anger</b> causes Riley's personality islands to crumble and fall into the 'Memory Dump', where things fade to non-existence as they are forgotten.</span>
+        <span class="emotion_plot sadness_plot">While navigating the vast long-term memory area, <b>Joy</b> and <b>Sadness</b> encounter Bing Bong, Riley's imaginary friend, who suggests riding the 'train of thought' back to Headquarters.</span>
+        <span class="emotion_plot disgust_plot">Meanwhile, <b>Anger</b>, intending to restore Riley's happiness, convinces <b>Disgust</b> and <b>Fear</b> that Riley should run away to Minnesota, where her happy memories were formed.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b>, <b>Sadness</b>, and Bing Bong catch the train, but it is derailed when another island collapses.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b>, who is afraid all of the core memories will become sad, abandons <b>Sadness</b> and tries to ride a 'recall tube' back to Headquarters.</span>
+        <span class="emotion_plot sadness_plot">The ground below the tube collapses, sending <b>Joy</b> and Bing Bong plunging into the Memory Dump.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b> discovers a sad memory of losing a hockey game that turned happy when Riley's parents and friends comforted her, and she realizes <b>Sadness</b>'s purpose in alerting others when Riley is emotionally overwhelmed and needs help.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b> and Bing Bong try to use his song-fueled wagon rocket to escape the Memory Dump but are unable to ascend due to their combined weight.</span>
+        Bing Bong jumps out of the wagon to save <b>Joy</b> and fades away in the Memory Dump, forgotten.
+        <span class="emotion_plot anger_plot"><b>Anger</b>'s idea disables the console, putting Riley into depression as she boards a bus to Minnesota.</span>
+        <span class="emotion_plot sadness_plot"><b>Joy</b> reunites with <b>Sadness</b>, and they return to Headquarters.</span>
+        Riley's emotions admire her new personality islands, powered by core memories that contain a mixture of emotions, and are given an expanded console that has enough room for them to work as a team.
+        <span class="emotion_plot fear_plot">Although they admit slight concern over a large red alarm marked 'puberty,' they forget about it.</span>
+    </p>
+    <a id="read-more-plot" href="https://en.wikipedia.org/wiki/Inside_Out_(2015_film)" target="_blank" class="read-more-link-plot">Read more</a>
+</div>
+
+<script>
+    document.getElementById('toggle-plot').addEventListener('click', function() {
+        const plotContainer = document.getElementById('plot-container');
+        const isHidden = window.getComputedStyle(plotContainer).display === 'none';
+        if (isHidden) {
+            plotContainer.style.display = 'block';
+            this.textContent = 'Hide the Inside Out movie plot';
+        } else {
+            plotContainer.style.display = 'none';
+            this.textContent = 'Show the Inside Out movie plot';
+        }
+    });
+</script>

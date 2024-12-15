@@ -1,0 +1,54 @@
+<div style="display: flex; flex-direction: column; align-items: stretch; gap: 1%; margin-bottom: 1%;">
+  <!-- Menu déroulant pour sélectionner un genre -->
+  <div style="margin-bottom: 1em;">
+    <label for="genres-sankey-dropdown" style="font-weight: bold; margin-bottom: 0.5em; display: block;">Select Genre:</label>
+    <select id="genres-sankey-dropdown" onchange="loadGenresSankeyGraph(this.value)" style="width: 100%; padding: 0.5em; border-radius: 5px;">
+      <option value="All Genres">All Genres</option>
+      <option value="Action">Action</option>
+      <option value="Adventure">Adventure</option>
+      <option value="Animated">Animated</option>
+      <option value="Comedy">Comedy</option>
+      <option value="Crime">Crime</option>
+      <option value="Disaster">Disaster</option>
+      <option value="Documentary">Documentary</option>
+      <option value="Drama">Drama</option>
+      <option value="Experimental">Experimental</option>
+      <option value="Fantasy">Fantasy</option>
+      <option value="Historical">Historical</option>
+      <option value="Horror">Horror</option>
+      <option value="Musical">Musical</option>
+      <option value="Noir">Noir</option>
+      <option value="Pornographic">Pornographic</option>
+      <option value="Propaganda">Propaganda</option>
+      <option value="Romance">Romance</option>
+      <option value="Science Fiction">Science Fiction</option>
+      <option value="Teen">Teen</option>
+      <option value="Thriller">Thriller</option>
+      <option value="War">War</option>
+      <option value="Western">Western</option>
+    </select>
+  </div>
+
+  <!-- Conteneur du graphique -->
+  <div id="genres-sankey-graph-container" class="genres-sankey-graph-container" style="flex-grow: 2; height: 500px; width: 100%; margin: auto;">
+    <!-- Graphique chargé ici -->
+  </div>
+</div>
+
+<script>
+  function loadGenresSankeyGraph(genre) {
+    const graphContainer = document.getElementById('genres-sankey-graph-container');
+
+    // Effacer le contenu précédent
+    graphContainer.innerHTML = '';
+
+    // Charger le graphique correspondant au genre
+    const graphUrl = `plots/${genre}_sankey_charts_transitions.html`;
+    const iframe = document.createElement('iframe');
+    iframe.src = graphUrl;
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.style.borderRadius = '5px';
+    graphContainer.appendChild(iframe);
+  }
+</script>

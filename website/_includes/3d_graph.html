@@ -1,0 +1,33 @@
+<style>
+    .container-3d-graph {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .iframe-container-3d-graph {
+        flex: 0 0 68%;
+        height: 400px;
+    }
+
+    .iframe-container-3d-graph iframe {
+        width: 100%;
+        height: 100%;
+        margin-left: 2%;
+        border-radius: 5px;
+    }
+
+    .text-container-3d-graph {
+        flex: 0 0 30%;
+    }
+</style>
+
+<div class="container-3d-graph">
+    <div class="text-container-3d-graph">
+        <p style="text-align: justify;">It is interesting to see that during the dimensionality reduction all the different emotions are somewhat clearly separated clusters except for the joy and sadness. It seems that the mean emotional profile type of actor with joy or sadness as dominant emotion is intertwined.</p>
+    </div>
+    <div class="iframe-container-3d-graph">
+        <iframe src="plots/3d_emotion_actor_movie_plot.html"></iframe>
+    </div>
+</div>

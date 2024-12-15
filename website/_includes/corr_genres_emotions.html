@@ -1,0 +1,75 @@
+<div style="display: flex; flex-direction: row; gap: 1%; margin-right: 30%; margin-bottom: 1%;">
+    <button id="joyBtnCorrGenres" onclick="showGraphCorrGenres('Joy')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #f3c35f; border-radius: 5px; flex: 1;">Joy</button>
+    <button id="sadnessBtnCorrGenres" onclick="showGraphCorrGenres('Sadness')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #85b8ed; border-radius: 5px; flex: 1;">Sadness</button>
+    <button id="angerBtnCorrGenres" onclick="showGraphCorrGenres('Anger')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; color: white; background-color: #e13c29; border-radius: 5px; flex: 1;">Anger</button>
+    <button id="disgustBtnCorrGenres" onclick="showGraphCorrGenres('Disgust')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #8bc664; border-radius: 5px; flex: 1;">Disgust</button>
+    <button id="fearBtnCorrGenres" onclick="showGraphCorrGenres('Fear')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #b99be5; border-radius: 5px; flex: 1;">Fear</button>
+    <button id="surpriseBtnCorrGenres" onclick="showGraphCorrGenres('Surprise')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" style="border: none; transition: transform 0.2s; background-color: #de9f81; border-radius: 5px; flex: 1;">Surprise</button>
+  </div>
+  
+  <div style="display: flex; justify-content: space-between; height: 500px;">
+    <div id="emotionGraphCorrGenres" style="flex-grow: 2; width: 70%;"></div>
+  
+    <div id="emotionDescriptionCorrGenres" style="text-align: justify; width: 30%; padding-left: 2%; overflow-y: auto; max-height: 500px;">
+      <p id="descriptionTextCorrGenres"></p>
+    </div>
+  </div>
+  
+  <script>
+    function showGraphCorrGenres(emotionCorrGenres) {
+        var graphContainerCorrGenres = document.getElementById('emotionGraphCorrGenres');
+        var descriptionContainerCorrGenres = document.getElementById('emotionDescriptionCorrGenres');
+
+        // Clear previous content
+        graphContainerCorrGenres.innerHTML = '';
+        descriptionContainerCorrGenres.innerHTML = '';
+
+        // Define the URL for the graph based on the selected emotion
+        var graphUrlCorrGenres = '/ada-2024-project-sparkling/plots/emotion_genre_heatmap_corr.html';
+
+        // Create and configure the iframe
+        var iframeCorrGenres = document.createElement('iframe');
+        iframeCorrGenres.src = graphUrlCorrGenres;
+        iframeCorrGenres.style.width = "100%";
+        iframeCorrGenres.style.height = "100%";
+        iframeCorrGenres.style.border = "none";
+        iframeCorrGenres.style.borderRadius = "5px";
+        graphContainerCorrGenres.appendChild(iframeCorrGenres);
+
+        // Add a descriptive paragraph based on the selected emotion
+        var descriptionTextCorrGenres = '';
+        var colorCorrGenres = '';
+
+        const analysesCorrGenres = {
+            Joy: "<b>Joy</b> illuminates comedy, romance, and musicals, genres crafted to bring smiles and inspire dreams. However, in horror, thrillers, and crime genres, it disappears entirely, overshadowed by darker emotions.",
+            Fear: "<b>Fear</b> reigns supreme in horror, thrillers, action, and science fiction, dominating suspenseful and adrenaline-packed stories. Yet, in musicals and romance, it is notably absent, panic is hard to evoke in the middle of a graceful choreography or during a candlelit dinner.",
+            Anger: "<b>Anger</b> fuels action and crime, bringing energy and intensity to explosive narratives.",
+            Sadness: "<b>Sadness</b> thrives in dramas and historical films, where tears flow and sacrifices mark the spirits.",
+            Disgust: "<b>Disgust</b>, true to its nature, excels in horror and experimental films, unsettling audiences with uncomfortable scenes.",
+            Surprise: "<b>Surprise</b> shines in science fiction and adventure but occasionally appears unexpectedly in teen or comedy genres, adding captivating twists. But what about drama, war and history genres? Not enough room for her big \"ta-da!\", she prefers to steal the show elsewhere."
+        };
+
+        descriptionTextCorrGenres = analysesCorrGenres[emotionCorrGenres] || '';
+        colorCorrGenres = {
+            Joy: '#f3c35f',
+            Sadness: '#85b8ed',
+            Anger: '#e13c29',
+            Disgust: '#8bc664',
+            Fear: '#b99be5',
+            Surprise: '#de9f81'
+        }[emotionCorrGenres] || '#000000';
+
+        // Add the explanatory text to the page
+        var paragraphCorrGenres = document.createElement('p');
+        paragraphCorrGenres.innerHTML = descriptionTextCorrGenres;
+        paragraphCorrGenres.style.backgroundColor = colorCorrGenres;
+        if (emotionCorrGenres == 'Anger') {
+            paragraphCorrGenres.style.color = '#ffffff';
+        }
+        paragraphCorrGenres.style.padding = '5%';
+        paragraphCorrGenres.style.borderRadius = '5px';
+        descriptionContainerCorrGenres.appendChild(paragraphCorrGenres);
+    }
+
+  </script>
+  
