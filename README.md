@@ -7,6 +7,7 @@ conda activate <env_name>
 pip install -r pip_requirements.txt
 ```
 
+## Website containing the datastory: https://epfl-ada.github.io/ada-2024-project-sparkling/
 
 ## Project proposal 
 
