@@ -85,7 +85,8 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
         ticks = [10, 20, 30, 40, 50, 60, 70, 80]
         fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks], gridcolor='lightgray')
 
-        fig.update_yaxes(range=[0,80], gridcolor='lightgray')
+        fig.update_yaxes(range=[0,80], gridcolor='lightgray', title="Percentage")
+        fig.update_xaxes(title="Genre")
         
     fig.update_layout(
         plot_bgcolor='white'
