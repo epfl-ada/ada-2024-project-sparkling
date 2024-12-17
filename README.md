@@ -9,6 +9,7 @@ pip install -r pip_requirements.txt
 The pip_requirements.txt has been generated from an Apple M1 Max computer.
 
 ## Website containing the datastory 
+The website contains all our additional detailed interpretations through buttons around our plots. These interpretations are also contained in the `results.ipynb`. Our goal is to allow a reader of our website to also have easily access to all our interpretations about the plots without needing to download and read our `result.ipynb`. Note that our `result.ipynb` contains additional analysis and interpretations that were not meant to be shown on the website.
 Link: https://epfl-ada.github.io/ada-2024-project-sparkling/
 
 ### Reading the `result.ipynb`
