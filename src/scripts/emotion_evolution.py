@@ -242,7 +242,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         fig.add_trace(go.Scatter(
             x=[emotion],
             y=[value],
-            text=[f"<b><span style='color: {'green' if value > 0 else 'red'};'>{value:+.2f}%</span> {emotion_emojis[emotion]}</b>"],
+            text=[f"<b><span style='font-size: 70%; color: {'green' if value > 0 else 'red'};'>{value:+.2f}%</span><br>{emotion_emojis[emotion]}</b>"],
             mode="markers+text",
             textposition="bottom center" if value < 0 else "top center",
             marker=dict(
@@ -283,7 +283,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
                 scatter_data.append(go.Scatter(
                     x=[emotion],
                     y=[value],
-                    text=[f"<b><span style='color: {'green' if value > 0 else 'red'};'>{value:+.2f}%</span> {emotion_emojis[emotion]}</b>"],
+                    text=[f"<b><span style='font-size: 70%; color: {'green' if value > 0 else 'red'};'>{value:+.2f}%</span> <br>{emotion_emojis[emotion]}</b>"],
                     mode="markers+text",
                     textposition="bottom center" if value < 0 else "top center",
                     marker=dict(
@@ -361,7 +361,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
     )
     
     fig.update_yaxes(
-        range=[-100, 100], 
+        range=[-100, 140], 
         title="Variation (%)",
         row=1,
         col=2,
@@ -373,7 +373,7 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         col=1
     )
     fig.update_xaxes(
-        range=[-0.5, len(emotion_columns) - 0.5],
+        range=[-1, len(emotion_columns)+1],
         categoryorder='total ascending', 
         row=1,
         col=2,
