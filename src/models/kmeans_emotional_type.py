@@ -51,6 +51,7 @@ def get_best_k_clustered_movie_emotional_type(df_emotions_normalized, is_review=
     silhouettes = pd.DataFrame(silhouettes).set_index('k')
 
     # Plot the data
+    plt.figure(figsize=(5, 5))
     plt.plot(silhouettes.index, silhouettes.score)
     plt.xlabel("K")
     plt.ylabel("Silhouette score")

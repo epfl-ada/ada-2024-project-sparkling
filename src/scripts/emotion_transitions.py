@@ -258,6 +258,12 @@ def plot_heat_map_transitions_plotly(df, file_name="_heatmap_transitions", genre
         save_plot(fig, genre+'_grouped_'+file_name)
     else:
         save_plot(fig, genre+file_name)
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 700,
+        height = 400,
+    )
     fig.show()
 
 
@@ -423,5 +429,11 @@ def plot_separated_sankey_plotly(emotions_split_df, genre="All Genres"):
     )
 
     save_plot(fig, genre + "_sankey_charts_transitions")
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 700,
+        height = 400,
+    )
 
     fig.show()

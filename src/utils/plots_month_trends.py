@@ -151,7 +151,7 @@ def plot_variation(type, data, df_movies=None):
                             font=dict(size=18, color=dominant_color, family="Arial, sans-serif")
                         ),
                         dict(
-                            text=f"Mean score for each emotion during the current period of the year in {type + 's'}",
+                            text=f"Mean score for each emotion during the <br>current period of the year in {type + 's'}",
                             x=0.98,  
                             y=1.1,  
                             xref="paper",
@@ -274,8 +274,8 @@ def plot_variation(type, data, df_movies=None):
     fig.update_layout(
         autosize=True,
         margin=dict(l=50, r=50, t=150, b=50),  
-        width= 1200,
-        height = 600,
+        width= 1050,
+        height = 550,
     )
     
     fig.show()
@@ -400,5 +400,12 @@ def corr_p_value_plot_periods(df1, df2):
         template="plotly_white",
     )
 
-    fig.show()
     save_plot(fig, "variation_corr_pvalues")
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 1000,
+        height = 430,
+    )
+
+    fig.show()

@@ -61,7 +61,7 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
     
     subplot_titles = []
     for cluster in genre_mean_per_cluster.index:
-        subplot_titles.append(f"Percentage of movie genre in cluster {clusters_name[cluster]} based on " + ("review" if is_review else "plot") + " emotions")
+        subplot_titles.append(f"Percentage of movie genre in cluster {clusters_name[cluster]} <br>based on " + ("review" if is_review else "plot") + " emotions")
     fig = make_subplots(rows=1, cols=k, subplot_titles=subplot_titles)
     
     # Display each clusters
@@ -85,17 +85,27 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
         ticks = [10, 20, 30, 40, 50, 60, 70, 80]
         fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks], gridcolor='lightgray')
 
-        fig.update_yaxes(range=[0,80], gridcolor='lightgray', title="Percentage")
-        fig.update_xaxes(title="Genre")
+        fig.update_yaxes(range=[0,80], gridcolor='lightgray', title="Percentage", title_font_size=12)
+        fig.update_xaxes(title="Genre", title_font_size=12)
         
     fig.update_layout(
         plot_bgcolor='white'
     )
 
+    # Make the subplot titles smaller
+    # https://community.plotly.com/t/setting-subplot-title-font-sizes/46612
+    fig.update_annotations(font_size=12)
+
     fig.show()
 
     # Save plot
     save_plot(fig, figure_name="percentage_movie_genre_" + ("review" if is_review else "plot"))
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 1000,
+        height = 500,
+    )
 
     centroids = bestKmeans.cluster_centers_
     centroids = pd.DataFrame(centroids, index=genre_mean_per_cluster.index, columns=emotions)

@@ -32,6 +32,9 @@ EMOJIS = {
     'surprise': '😯'
 }
 
+# List of emotions
+EMOTIONS = ["anger", "disgust", "fear", "joy", "sadness", "surprise"]
+
 
 def plot_movies_over_time_months(df_movies):
     """
@@ -231,7 +234,7 @@ def show_top_10_words_per_emotion(
     # plt.savefig(os.path.join(output_dir, 'top_words_per_emotion.png'))
     plt.show()
 
-def plot_emotion_distribution_per_period(dataframe, period_column):
+def plot_emotion_distribution_per_period_old(dataframe, period_column):
 
     """
     Generates a stacked bar chart of emotion distribution for each period : in our case we use it for months ans years.

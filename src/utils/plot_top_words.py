@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from wordcloud import WordCloud
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
-from src.utils.plot_genres import EMOTIONS, COLORS
+from src.utils.initial_plots_data import EMOTIONS, COLORS
 
 PLOTS_PATH = "plots"
 

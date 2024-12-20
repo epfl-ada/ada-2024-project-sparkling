@@ -29,6 +29,11 @@ def plot_ratings_by_most_dominant_emotion(df_reviews_with_emotions):
         paper_bgcolor='white'
     )
 
-    fig.show()
-
     save_plot(fig, "ratings_boxplot_final")
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 700,
+        height = 400,
+    )
+    fig.show()

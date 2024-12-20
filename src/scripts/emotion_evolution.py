@@ -385,7 +385,14 @@ def plot_bar_and_scatter_emotion_evolution(df_emotions_by_genre_time, genre, all
         col=1,
         title=None
     )
+    
     save_plot(fig, file_name)
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 900,
+        height = 450,
+    )
 
     fig.show()
     

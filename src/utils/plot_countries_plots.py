@@ -328,6 +328,12 @@ def plot_world_map_emotion_by_genre(df_emotions_normalized, df_countries, is_rev
     fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 3000  #Frame duration: 3 seconds
     fig.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 3000  #Transition duration: 3 seconds
 
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 900,
+        height = 400,
+    )
+
     fig.show()
 
     save_plot(fig, ("plot" if not is_reviews else "reviews")+"_map_final")
@@ -374,6 +380,12 @@ def plot_world_map_average_rating(df_movies_with_emotions_normalized, df_countri
         )
     )
 
-    fig.show()
-
     save_plot(fig, "ratings_map_final")
+
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 900,
+        height = 400,
+    )
+
+    fig.show()

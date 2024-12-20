@@ -2,8 +2,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import os
 
-from src.utils.plot_genres import EMOTIONS
-from src.utils.initial_plots_data import COLORS
+from src.utils.initial_plots_data import COLORS, EMOTIONS
 from src.utils.save_plot import save_plot
 
 
@@ -98,7 +97,11 @@ def emotion_distribution_by_movie_rating(df_movies_with_emotions_normalized, df_
 
     save_plot(fig, f"emotion_distribution_of_movie_{'reviews' if is_review else 'plots'}_by_average_movie_rating_bins")
 
-    # Display the chart in the browser
+    # Force the width and the height for the notebook
+    fig.update_layout(
+        width= 700,
+        height = 400,
+    )
     fig.show()
 
 
