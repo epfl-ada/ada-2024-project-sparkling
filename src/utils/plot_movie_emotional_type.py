@@ -62,7 +62,7 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
     subplot_titles = []
     for cluster in genre_mean_per_cluster.index:
         subplot_titles.append(f"Percentage of movie genre in cluster {clusters_name[cluster]} <br>based on " + ("review" if is_review else "plot") + " emotions")
-    fig = make_subplots(rows=1, cols=k, subplot_titles=subplot_titles)
+    fig = make_subplots(rows=1, cols=k, subplot_titles=subplot_titles, shared_yaxes=True)
     
     # Display each clusters
     for cluster in genre_mean_per_cluster.index:
@@ -85,7 +85,7 @@ def plot_clustered_movie_emotional_type(df_emotions_normalized, df_genres, is_re
         ticks = [10, 20, 30, 40, 50, 60, 70, 80]
         fig.update_yaxes(tickmode='array', tickvals = ticks, ticktext = [f"{x}% " for x in ticks], gridcolor='lightgray')
 
-        fig.update_yaxes(range=[0,80], gridcolor='lightgray', title="Percentage", title_font_size=12)
+        fig.update_yaxes(range=[0,80], gridcolor='lightgray', title="Percentage", title_font_size=12, row=1, col=1)
         fig.update_xaxes(title="Genre", title_font_size=12)
         
     fig.update_layout(
