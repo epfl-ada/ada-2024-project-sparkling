@@ -13,7 +13,8 @@ The website contains all our additional detailed interpretations through buttons
 Link: https://epfl-ada.github.io/ada-2024-project-sparkling/
 
 ### Reading the `result.ipynb`
-Please download the `result.ipynb` file in order to see the plots
+Please download the `result.ipynb` file in order to see the plots (we recommend opening it with JupyterLab)
+If you still don't see our interactive plots, then you can look at our `result.html` which contains our `result.ipynb` exported as HTML.
 
 ## Project proposal 
 
